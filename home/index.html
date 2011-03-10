@@ -6,7 +6,7 @@
 		<script>
 
 
-			 var socket = new io.Socket('localhost', { port: 8090 }); 
+			 var socket = new io.Socket('robashton.no.de', { port: 8090 }); 
 			 socket.connect();
 			 socket.on('connect', function(){ 
 
@@ -20,17 +20,17 @@
 
 			 });
 
-	$(document).ready(function(){
+			$(document).ready(function(){
 
-		$('#simples').keyup(function(e) {
-			var simples = $(this);
-			if(e.keyCode == 13) {
-				socket.send(simples.val());
-				simples.val('');
-			}
-		});
+				$('#simples').keyup(function(e) {
+					var simples = $(this);
+					if(e.keyCode == 13) {
+						socket.send(simples.val());
+						simples.val('');
+					}
+				});
 
-	});
+			});
 
 		
 	
