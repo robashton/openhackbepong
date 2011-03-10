@@ -4,10 +4,42 @@
 		<script src="/socket.io/socket.io.js"></script> 
 
 		<script>
-			
+
+
+			 var socket = new io.Socket('localhost', { port: 8090 }); 
+			 socket.connect();
+			 socket.on('connect', function(){ 
+
+			 });
+
+			 socket.on('message', function(data){ 
+				$('#messages').prepend("<p>" + data + "</p>");
+			 });
+
+			 socket.on('disconnect', function(){ 
+
+			 });
+
+	$(document).ready(function(){
+
+		$('#simples').keyup(function(e) {
+			var simples = $(this);
+			if(e.keyCode == 13) {
+				socket.send(simples.val());
+				simples.val('');
+			}
+		});
+
+	});
+
+		
+	
 		</script>
 	</head>
 	<body>
-		
+		<input type="text" id="simples" />
+		<div id="messages">
+			
+		</div>
 	</body>
 </html>

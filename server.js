@@ -15,7 +15,19 @@ server.listen(8090);
   
 // socket.io 
 var socket = io.listen(server); 
+var clients = [];
+
 socket.on('connection', function(client){ 
-  client.on('message', function(){} ) 
-  client.on('disconnect', function(){} ) 
+	clients.push(client);
+	client.index = clients.length-1;
+
+  	client.on('message', function(data){
+		for(i in clients){
+			if(clients[i] != undefined)
+				clients[i].send(data);
+		}
+	} ) 
+  	client.on('disconnect', function(){
+		clients.splice(client.index, 1);
+	} ) 
 }); 
