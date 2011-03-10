@@ -1,14 +1,15 @@
 var http = require('http'),  
+path = require('path'),
 io = require('socket.io'), 
 fs = require('fs');
+paperboy = require('paperboy'),
+
+WEBROOT = path.join(path.dirname(__filename), 'home');
 
 server = http.createServer(function(req, res){ 
- res.writeHead(200, {'Content-Type': 'text/html'}); 
- fs.readFile('./index.html', function(err, data){
-		res.write(data);
-		res.end();
-	});	
-
+	paperboy
+	.deliver(WEBROOT, req, res)
+	.addHeader('Cache-Control', 'no-cache');
 });
 server.listen(8090);
   
