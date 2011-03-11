@@ -27,6 +27,16 @@
 
 		<script>
 
+			var blocks = [];
+			for(var x = 0; x < 20 ; x++){
+				for(var y = 0 ; y < 10 ; y++){
+					blocks.push({
+						positionX: 20 - (x * 2.1),
+						positionY: 10 - (y * 2.1)
+					});
+				}
+			}
+
 			function webGLStart() {
 			  PhiloGL('game', {
 			    program: {
@@ -38,36 +48,64 @@
 			      alert("You probably don't have WebGL - sorry");
 			    },
 			    onLoad: function(app) {
-			      var gl = app.gl,
-				  canvas = app.canvas,
-				  program = app.program,
-				  camera = app.camera;
+				var gl = app.gl,
+				canvas = app.canvas,
+				program = app.program,
+				camera = app.camera;
 
-			      gl.viewport(0, 0, canvas.width, canvas.height);
-			      gl.clearColor(0, 0, 0, 1);
-			      gl.clearDepth(1);
-			      gl.enable(gl.DEPTH_TEST);
-			      gl.depthFunc(gl.LEQUAL);
+				gl.viewport(0, 0, canvas.width, canvas.height);
+				gl.clearColor(0, 0, 0, 1);
+				gl.clearDepth(1);
+				gl.enable(gl.DEPTH_TEST);
+				gl.depthFunc(gl.LEQUAL);
 
-			      program.setBuffers({       
-				'square': {
-				  attribute: 'aVertexPosition',
-				  value: new Float32Array([1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0]),
-				  size: 3
-				}
-			      });
-			      
-			      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				program.setBuffers({       
+					'square': {
+						attribute: 'aVertexPosition',
+						value: new Float32Array([1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0]),
+						size: 3
+					}
+				});
 
-				camera.modelView.id();
-			      camera.modelView.$translate(0, 0, -20);
-			      program.setUniform('uMVMatrix', camera.modelView);
-			      program.setUniform('uPMatrix', camera.projection);
-			      program.setBuffer('square');
-			      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+				setInterval( function() {
+					tick(app);
+				}, 1000 / 60);				
 			    }
 			  });  
 			}
+
+
+			function tick(app){
+				//doLogic(app);
+				renderScene(app);	
+			}
+
+/*			function doLogic(app)
+				
+			}
+*/
+			function renderScene(app){
+				var gl = app.gl,
+				canvas = app.canvas,
+				program = app.program,
+				camera = app.camera;
+
+				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				program.setBuffer('square');
+				program.setUniform('uPMatrix', camera.projection);
+
+				// Render each block
+		
+				for(var x = 0; x < blocks.length; x++){		
+					camera.modelView.id();			
+					camera.modelView.$translate(blocks[x].positionX, blocks[x].positionY, -70);				
+					program.setUniform('uMVMatrix', camera.modelView);		
+					gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+				}
+			}
+
+
+			
 	
 		</script>
 
