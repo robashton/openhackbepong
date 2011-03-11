@@ -27,6 +27,9 @@
 
 		<script>
 
+			var ballSpeed = { x: 0.0, y: 0.1 };
+			var ball = { x: 5, y: 5 };
+
 			var blocks = [];
 			for(var x = 0; x < 20 ; x++){
 				for(var y = 0 ; y < 10 ; y++){
@@ -36,6 +39,8 @@
 					});
 				}
 			}
+			
+	
 
 			function webGLStart() {
 			  PhiloGL('game', {
@@ -76,14 +81,15 @@
 
 
 			function tick(app){
-				//doLogic(app);
+				doLogic(app);
 				renderScene(app);	
 			}
 
-/*			function doLogic(app)
-				
+			function doLogic(app){
+				ball.x += ballSpeed.x;
+				ball.y += ballSpeed.y;
 			}
-*/
+
 			function renderScene(app){
 				var gl = app.gl,
 				canvas = app.canvas,
@@ -94,14 +100,17 @@
 				program.setBuffer('square');
 				program.setUniform('uPMatrix', camera.projection);
 
-				// Render each block
-		
 				for(var x = 0; x < blocks.length; x++){		
 					camera.modelView.id();			
 					camera.modelView.$translate(blocks[x].positionX, blocks[x].positionY, -70);				
 					program.setUniform('uMVMatrix', camera.modelView);		
 					gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 				}
+
+				camera.modelView.id();			
+				camera.modelView.$translate(ball.x, ball.y, -70);
+				program.setUniform('uMVMatrix', camera.modelView);		
+				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 			}
 
 
