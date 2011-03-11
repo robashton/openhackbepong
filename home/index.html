@@ -30,6 +30,10 @@
 			var ballSpeed = { x: 0.0, y: 0.1 };
 			var ball = { x: 5, y: 5 };
 
+			var idealTimePerFrame = 1000 / 30;
+			var leftover = 0.0;
+			var timeAtLastFrame = new Date().getTime();
+
 			var blocks = [];
 			for(var x = 0; x < 20 ; x++){
 				for(var y = 0 ; y < 10 ; y++){
@@ -74,15 +78,27 @@
 
 				setInterval( function() {
 					tick(app);
-				}, 1000 / 60);				
+				}, 50);				
 			    }
 			  });  
 			}
 
 
 			function tick(app){
-				doLogic(app);
-				renderScene(app);	
+				
+				var timeAtThisFrame = new Date().getTime();
+				var diff = (timeAtThisFrame - timeAtLastFrame) + leftover;
+
+				var frames = Math.floor(diff / idealTimePerFrame);
+				leftover = diff - (frames * idealTimePerFrame);	
+				
+				for(i = 0 ; i < frames ; i++){
+					doLogic(app);
+				}
+
+				renderScene(app);
+
+				timeAtLastFrame = timeAtThisFrame;	
 			}
 
 			function doLogic(app){
