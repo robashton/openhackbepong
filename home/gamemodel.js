@@ -20,7 +20,7 @@ function BuildGameState()
 {
    return {
       Pads: [BuildModel(PadId1,-240, 0, 5, 15), BuildModel(PadId2, 240, 0, 5, 15) ],
-      Ball: BuildModel(BallId, 0, 0, 5, 5),
+      Ball: BuildModel(BallId, 0, 0, 50, 50),
       Bounds: {x:-250,y:-250,right:250,bottom:250}
    };
 }

@@ -9,20 +9,27 @@
 		  #ifdef GL_ES
 		  precision highp float;
 		  #endif
+
+			varying vec2 vTextureCoord;
+		   uniform sampler2D uSampler;
 		 
 		  void main(void) {
-		    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));		
 		  }
 		</script> 
 		 
 		<script id="shader-vs" type="x-shader/x-vertex"> 
 		  attribute vec3 aVertexPosition;
+		  attribute vec2 aTextureCoord;
 		
 		  uniform mat4 uMVMatrix;
 		  uniform mat4 uPMatrix;
+
+		  varying vec2 vTextureCoord;
 		 
 		  void main(void) {
 		    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+			 vTextureCoord = aTextureCoord;
 		  }
 		</script>
 
@@ -34,11 +41,17 @@
 
 			function webGLStart() {
 			  PhiloGL('game', {
+				context: {
+				//	debug: true
+				},
 			    program: {
 			      from: 'ids',
 			       vs: 'shader-vs',
 			       fs: 'shader-fs'
 			    },
+				 textures: {
+					src: [ 'trans.png' ]
+				 },
 			    onError: function() {
 			      alert("You probably don't have WebGL - sorry");
 			    },
@@ -52,14 +65,33 @@
 				camera.projection.frustum(-250, 250, -250, 250, -1, 1);
 				gl.clearColor(0, 0, 255, 1);
 				gl.clearDepth(1);
-				gl.enable(gl.DEPTH_TEST);
+			   gl.disable(gl.DEPTH_TEST);
 				gl.depthFunc(gl.LEQUAL);
 
+				gl.enable(gl.BLEND);
+
 				program.setBuffers({       
-					'square': {
+					'aVertexPosition': {
 						attribute: 'aVertexPosition',
-						value: new Float32Array([1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0]),
+						value: new Float32Array([ -1.0, -1.0, 0, 
+															1.0, -1.0, 0, 
+															1.0,  1.0, 0, 
+															-1.0, 1.0, 0]),
 						size: 3
+					},
+					'aTextureCoord': {
+						attribute: 'aTextureCoord',
+						value: new Float32Array([
+														1.0, 1.0,
+														0.0, 1.0,
+														0.0, 0.0,
+														1.0, 0.0  ]),
+						size: 2
+					},
+				 	'indices': {
+						value: new Uint16Array([0, 1, 2, 0, 2, 3]),
+						bufferType: gl.ELEMENT_ARRAY_BUFFER,
+						size: 1
 					}
 				});
 
@@ -99,8 +131,15 @@
 				camera = app.camera;
 			
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-				program.setBuffer('square');
+		
 				program.setUniform('uPMatrix', camera.projection);
+
+				program.setBuffer('aVertexPosition')
+						 .setBuffer('aTextureCoord')
+						 .setBuffer('indices')
+				       .setTexture('trans.png');
+
+			   program.setUniform('uSampler', 0);
 
 				var g=GameState;
 				renderQuad(app, g.Pads[0]);
@@ -121,9 +160,8 @@
 				camera.modelView.$scale(model.width, model.height, 1);				
 			
 				program.setUniform('uMVMatrix', camera.modelView);		
-				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);	
-				
-				console.log('Rendering: ' + model.width + ' ' + model.height + ' ' + model.x + ' ' + model.y);
+			
+				gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);	
 			}
 			
 	
