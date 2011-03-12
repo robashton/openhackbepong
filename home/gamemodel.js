@@ -11,7 +11,8 @@ function BuildModel(id, x, y, width, height)
 	velx:0,
 	vely:0,
 	width: width,
-	height: height
+	height: height,
+        friction: 1.01
 	};
 }
 
@@ -29,14 +30,30 @@ GameState = BuildGameState();
 function Move(m)
 {
    var b = GameState.Bounds;
-/*   m.x+= m.velx;
+   m.x+= m.velx;
    m.y+= m.vely;
-   m.velx/=1.1;
-   m.vely/=1.1;
-   if (m.x<b.x) m.x=b.x-m.x;
-   if (m.x>b.right) m.x=b.right-m.x;
-   if (m.y<b.y) m.x=b.y-m.x;
-   if (m.y<b.bottom) m.y=b.bottom-m.y; */
+   m.velx*=(1-m.friction);
+   m.vely*=(1-m.friction);
+   if (m.x<b.x) 
+   { 
+      m.x+=b.x-m.x; 
+      m.velx=-m.velx; 
+   }
+   if (m.x>b.right) 
+   { 
+      m.x-=b.right-m.x; 
+      m.velx=-m.velx; 
+   }
+   if (m.y<b.y) 
+   { 
+      m.y+=b.y-m.y; 
+      m.vely=-m.vely;
+   }
+   if (m.y>b.bottom) 
+   { 
+//      m.y-=b.bottom-m.y;
+      m.vely=-m.vely;
+   }
 } 
 
 function Push(m,x,y)
@@ -52,3 +69,6 @@ function DoGameLoop()
    }
    Move(GameState.Ball);
 } 
+
+GameState.Ball.friction = 0;
+Push(GameState.Ball,12,-5);
