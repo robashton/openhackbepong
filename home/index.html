@@ -3,6 +3,7 @@
 		<script src="jquery-1.5.1.min.js"></script> 
 		<script src="gamemodel.js"></script>
 		<script src="PhiloGL.js"></script> 
+		<script src="game.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
 
 		<script id="shader-fs" type="x-shader/x-fragment"> 
@@ -33,146 +34,41 @@
 		  }
 		</script>
 
-		<script>
+	 <script type="text/javascript">
+		$(document).ready(function(){
+			$('#playing').hide();
 
-			var idealTimePerFrame = 1000 / 30;
-			var leftover = 0.0;
-			var timeAtLastFrame = new Date().getTime();	
+		 var socket = new io.Socket(); 
+		 socket.connect();
+		 socket.on('connect', function(){
 
-			function webGLStart() {
-			  PhiloGL('game', {
-				context: {
-				//	debug: true
-				},
-			    program: {
-			      from: 'ids',
-			       vs: 'shader-vs',
-			       fs: 'shader-fs'
-			    },
-				 textures: {
-					src: [ 'trans.png' ]
-				 },
-			    onError: function() {
-			      alert("You probably don't have WebGL - sorry");
-			    },
-			    onLoad: function(app) {
-				var gl = app.gl,
-				canvas = app.canvas,
-				program = app.program,
-				camera = app.camera;
-
-				gl.viewport(0, 0, canvas.width, canvas.height);
-				camera.projection.frustum(-250, 250, -250, 250, -1, 1);
-				gl.clearColor(0, 0, 255, 1);
-				gl.clearDepth(1);
-			   gl.disable(gl.DEPTH_TEST);
-				gl.depthFunc(gl.LEQUAL);
-
-				gl.enable(gl.BLEND);
-
-				program.setBuffers({       
-					'aVertexPosition': {
-						attribute: 'aVertexPosition',
-						value: new Float32Array([ -1.0, -1.0, 0, 
-															1.0, -1.0, 0, 
-															1.0,  1.0, 0, 
-															-1.0, 1.0, 0]),
-						size: 3
-					},
-					'aTextureCoord': {
-						attribute: 'aTextureCoord',
-						value: new Float32Array([
-														1.0, 1.0,
-														0.0, 1.0,
-														0.0, 0.0,
-														1.0, 0.0  ]),
-						size: 2
-					},
-				 	'indices': {
-						value: new Uint16Array([0, 1, 2, 0, 2, 3]),
-						bufferType: gl.ELEMENT_ARRAY_BUFFER,
-						size: 1
-					}
-				});
-
-				setInterval( function() {
-					tick(app);
-				}, 50);				
-			    }
-			  });  
-			}
-
-
-			function tick(app){
-				
-				var timeAtThisFrame = new Date().getTime();
-				var diff = (timeAtThisFrame - timeAtLastFrame) + leftover;
-
-				var frames = Math.floor(diff / idealTimePerFrame);
-				leftover = diff - (frames * idealTimePerFrame);	
-				
-				for(i = 0 ; i < frames ; i++){
-					doLogic(app);
-				}
-
-				renderScene(app);
-
-				timeAtLastFrame = timeAtThisFrame;	
-			}
-
-			function doLogic(app){
-				DoGameLoop();
-			}
-
-			function renderScene(app){
-				var gl = app.gl,
-				canvas = app.canvas,
-				program = app.program,
-				camera = app.camera;
-			
-				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-		
-				program.setUniform('uPMatrix', camera.projection);
-
-				program.setBuffer('aVertexPosition')
-						 .setBuffer('aTextureCoord')
-						 .setBuffer('indices')
-				       .setTexture('trans.png');
-
-			   program.setUniform('uSampler', 0);
-
-				var g=GameState;
-				renderQuad(app, g.Pads[0]);
-				renderQuad(app, g.Pads[1]);
-				renderQuad(app, g.Ball);
-				
-			}
-
-			function renderQuad(app, model)
+		 });
+		 socket.on('message', function(data){
+			switch(data.message)
 			{
-				var gl = app.gl,
-				canvas = app.canvas,
-				program = app.program,
-				camera = app.camera;
-			
-				camera.modelView.id();
-				camera.modelView.$translate(model.x, model.y, -1);
-				camera.modelView.$scale(model.width, model.height, 1);				
-			
-				program.setUniform('uMVMatrix', camera.modelView);		
-			
-				gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);	
-			}
-			
-	
-		</script>
+				case 'start':
+					// Start the game
+				break;
+			}	
+		 });
+		 socket.on('disconnect', function(){ 
 
-		<script>
-		//	$(document).ready(webGLStart);
-		</script>
+		 });
+		  
+
+		});
+	</script>
+
 	</head>
-	<body onload="webGLStart();">		
-		<canvas id="game" style="border: none;" width="500" height="500">
-		</canvas>
+	<body>		
+
+		<div id="waiting">
+			<p>Waiting for the game to start</p>
+		</div>
+
+		<div id="playing">
+			<canvas id="game" style="border: none;" width="500" height="500">
+			</canvas>
+		</div>
 	</body>
 </html>

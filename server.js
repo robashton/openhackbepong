@@ -1,4 +1,4 @@
-var http = require('http'),  
+http = require('http'),  
 path = require('path'),
 io = require('socket.io'), 
 fs = require('fs');
@@ -15,19 +15,47 @@ server.listen(8090);
   
 // socket.io 
 var socket = io.listen(server); 
-var clients = [];
+
+
+var games = [];
+
+var waitingClient = null;
 
 socket.on('connection', function(client){ 
-	clients.push(client);
-	client.index = clients.length-1;
+
+	if(waitingClient == null){ waitingClient = client; return; }
+	
+	var game = {
+		clientOne: waitingClient,
+		clientTwo: client
+	};	
+
+	games.push(game);
+	waitingClient = null;
+
+	setupTheGame(game);
 
   	client.on('message', function(data){
-		for(i in clients){
-			if(clients[i] != undefined)
-				clients[i].send(data);
-		}
-	} ) 
-  	client.on('disconnect', function(){
-		clients.splice(client.index, 1);
-	} ) 
+	
+	});
+	client.on('disconnect', function(){
+
+	} ); 
 }); 
+
+
+function setupTheGame(game)
+{
+	game.clientOne.clientId = 1;
+	game.clientTwo.clientId = 2;
+
+	game.clientOne.game = game;
+	game.clientTwo.game = game;
+
+	game.clientOne.send({
+		message: 'start'
+	});
+	game.clientTwo.send({
+		message: 'start'
+	});
+}
