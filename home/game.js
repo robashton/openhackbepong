@@ -13,7 +13,7 @@ var idealTimePerFrame = 1000 / 30;
 		keyCodes ={S:83,X:88,H:72,N:78}
 
 		function handleKeyDown(event) {			
-                        currentlyPressedKeys[event.keyCode] = true
+         currentlyPressedKeys[event.keyCode] = true
 			
 		}
 
@@ -107,13 +107,32 @@ var idealTimePerFrame = 1000 / 30;
 
 		function doLogic(app){
 
-		var padspeed=20;
-		if (currentlyPressedKeys[keyCodes.S]==true) Push(GameState.Pads[1],0,-padspeed)
-		if (currentlyPressedKeys[keyCodes.X]==true) Push(GameState.Pads[1],0,padspeed)
-		if (currentlyPressedKeys[keyCodes.H]==true) Push(GameState.Pads[0],0,-padspeed)
-		if (currentlyPressedKeys[keyCodes.N]==true) Push(GameState.Pads[0],0,padspeed);
+			var padspeed=20;
+
+			if (currentlyPressedKeys[keyCodes.S]==true){			 
+				Push(GameState.Pads[0],0,-padspeed);
+				NotifyPaddlePushed(-padspeed);
+				
+			}
+			if (currentlyPressedKeys[keyCodes.X]==true)
+			{
+			 	Push(GameState.Pads[0],0,padspeed);
+				NotifyPaddlePushed(padspeed);
+			}
 
 			DoGameLoop();
+		}
+
+		function ReceivePaddlePushed(speed)
+		{
+			Push(GameState.Pads[1],0,speed)
+		}
+
+		function NotifyPaddlePushed(speed){
+			socket.send({
+				message: 'paddlepushed',
+				speed: speed				
+			});
 		}
 
 		function renderScene(app){

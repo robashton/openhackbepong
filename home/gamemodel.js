@@ -75,8 +75,6 @@ function BouncePad(nr)
    }
 }
 
-
-
 function Push(m,x,y)
 {
    if (GameState.Waiting===true)
@@ -114,5 +112,4 @@ function DoGameLoop()
 } 
 
 GameState = BuildGameState();
-
 GameState.Ball.friction = 0;

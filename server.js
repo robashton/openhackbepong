@@ -30,7 +30,7 @@ socket.on('connection', function(client){
 				startGameWithClient(client);
 			break;
 			default:
-				routeMessageFromClient(client);
+				routeMessageFromClient(data, client);
 			break;
       }
 	});

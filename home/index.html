@@ -38,7 +38,7 @@
 		$(document).ready(function(){
 			$('#playing').hide();
 
-		 var socket = new io.Socket(); 
+		 socket = new io.Socket(); 
 		 socket.connect();
 		 socket.on('connect', function(){
 
@@ -56,6 +56,11 @@
 					$('#zombied').show();
 					$('#playing').hide();       
 			   break;
+				case 'paddlepushed':
+					console.log("Received a message from other client: " + data.speed);
+					ReceivePaddlePushed(data.speed);
+				break;
+				
 			}	
 		 });
 		 socket.on('disconnect', function(){ 
