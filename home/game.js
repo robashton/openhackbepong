@@ -1,8 +1,12 @@
 var idealTimePerFrame = 1000 / 30;
 		var leftover = 0.0;
 		var timeAtLastFrame = new Date().getTime();	
+		var started = false;
 
 		function webGLStart() {
+			if(started) { return; }
+			started = true;
+
 		  PhiloGL('game', {
 			context: {
 			//	debug: true
@@ -125,4 +129,9 @@ var idealTimePerFrame = 1000 / 30;
 			program.setUniform('uMVMatrix', camera.modelView);		
 		
 			gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);	
+		}
+
+
+		function webGlStop() {
+			
 		}

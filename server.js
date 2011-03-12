@@ -18,40 +18,86 @@ var socket = io.listen(server);
 
 
 var games = [];
-
+var zombieClients = [];
 var waitingClient = null;
 
 socket.on('connection', function(client){ 
+	startGameWithClient(client);
+ 
+  	client.on('message', function(data){
+		switch(data.message) {
+			case 'startgame':
+				startGameWithClient(client);
+			break;
+			default:
+				routeMessageFromClient(client);
+			break;
+      }
+	});
+	client.on('disconnect', function(){
+      console.log('disconnected callback called!');
 
+      if (isClientZombie(client)) {
+        removeFromZombieClients(client);
+		  return;
+		}
+
+      var game = client.game;
+
+		if(game.clientOne == client) 
+        notifyOtherPlayersLeft(game.clientTwo);
+      else 
+        notifyOtherPlayersLeft(game.clientOne);
+
+      games.splice(game.id, 1);
+	} ); 
+});
+
+function routeMessageFromClient(messageFromOtherClient, client){
+	var game = client.game;
+	if(game.clientOne == client)
+		game.clientTwo.send(messageFromOtherClient);
+	else
+		game.clientOne.send(messageFromOtherClient);
+}
+
+function startGameWithClient(client){
+	if(isClientZombie(client)) {
+		removeFromZombieClients(client);
+	}
+	     
 	if(waitingClient == null){ waitingClient = client; return; }
 	
 	var game = {
 		clientOne: waitingClient,
 		clientTwo: client
 	};	
-   game.id = games.length();
+   game.id = games.length;
 	games.push(game);
 	waitingClient = null;
 
 	setupTheGame(game);
+}
 
-  	client.on('message', function(data){
-		
-	});
-	client.on('disconnect', function(){
-      var game = client.game;
-      if (game.disconnected) return;
+function removeFromZombieClients(client) {
+  zombieClients.splice(client.zombieId, 1);
+}
 
-		if(game.clientOne == client) 
-        game.clientTwo.send({ message: "otherdisconnected" });
-      else 
-        game.clientOne.send({ message: "otherdisconnected" });
+function notifyOtherPlayersLeft(client) {
+  client.send({ message: "otherdisconnected" });
+  addToZombieClients(client);
+}
 
-      game.disconnected = true;
-      games.splice(game.id, 1);
-	} ); 
-}); 
+function isClientZombie(client) {
+  if (client.zombieId) return true;
+  return false;
+}
 
+function addToZombieClients(client) {
+  client.game = null;
+  client.zombieId = zombieClients.length;
+  zombieClients.push(client);
+}
 
 function setupTheGame(game)
 {

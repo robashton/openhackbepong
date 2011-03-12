@@ -48,15 +48,26 @@
 			{
 				case 'start':
 					$('#waiting').hide();
+					$('#zombied').hide();
 					$('#playing').show();
 					webGLStart();
 				break;
+            case "otherdisconnected":
+					$('#zombied').show();
+					$('#playing').hide();       
+			   break;
 			}	
 		 });
 		 socket.on('disconnect', function(){ 
-
+				alert('You have been disconnected');
 		 });
-		  
+
+		$('#startGame').click(function(){
+			$('#waiting').show();
+			$('#zombied').hide();
+			$('#playing').hide();
+			socket.send({ message: 'startgame'});
+		});
 
 		});
 	</script>
@@ -71,6 +82,10 @@
 		<div id="playing">
 			<canvas id="game" style="border: none;" width="500" height="500">
 			</canvas>
+		</div>
+
+		<div id="zombied">
+			<p>The other player left the game, click <span id="startGame">here</span> to start a new game or close this window<p>
 		</div>
 	</body>
 </html>
