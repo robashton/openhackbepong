@@ -3,6 +3,24 @@ var idealTimePerFrame = 1000 / 30;
 		var timeAtLastFrame = new Date().getTime();	
 		var started = false;
 
+		$(document).ready(function()
+		{
+			document.onkeydown = handleKeyDown;
+ 				document.onkeyup = handleKeyUp;
+		});
+		
+		currentlyPressedKeys = {};
+		keyCodes ={S:83,X:88,H:72,N:78}
+
+		function handleKeyDown(event) {			
+                        currentlyPressedKeys[event.keyCode] = true
+			
+		}
+
+		function handleKeyUp(event) {
+			currentlyPressedKeys[event.keyCode] = false;
+		}
+
 		function webGLStart() {
 			if(started) { return; }
 			started = true;
@@ -88,6 +106,13 @@ var idealTimePerFrame = 1000 / 30;
 		}
 
 		function doLogic(app){
+
+		var padspeed=20;
+		if (currentlyPressedKeys[keyCodes.S]==true) Push(GameState.Pads[1],0,-padspeed)
+		if (currentlyPressedKeys[keyCodes.X]==true) Push(GameState.Pads[1],0,padspeed)
+		if (currentlyPressedKeys[keyCodes.H]==true) Push(GameState.Pads[0],0,-padspeed)
+		if (currentlyPressedKeys[keyCodes.N]==true) Push(GameState.Pads[0],0,padspeed);
+
 			DoGameLoop();
 		}
 
