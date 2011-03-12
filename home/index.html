@@ -47,7 +47,9 @@
 			switch(data.message)
 			{
 				case 'start':
-					// Start the game
+					$('#waiting').hide();
+					$('#playing').start();
+					webGLStart();
 				break;
 			}	
 		 });
