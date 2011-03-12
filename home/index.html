@@ -16,7 +16,8 @@
 		 
 		<script id="shader-vs" type="x-shader/x-vertex"> 
 		  attribute vec3 aVertexPosition;
-		 
+		  attribute vec2 aVertexColour;
+		
 		  uniform mat4 uMVMatrix;
 		  uniform mat4 uPMatrix;
 		 
@@ -27,19 +28,19 @@
 
 		<script>
 
-			var ballSpeed = { x: 0.0, y: 0.1 };
-			var ball = { x: 5, y: 5 };
-
 			var idealTimePerFrame = 1000 / 30;
 			var leftover = 0.0;
 			var timeAtLastFrame = new Date().getTime();
+
+			var ballSpeed = { x: 0.0, y: 1.0 };
+			var ball = { x: 5, y: 5 };
 
 			var blocks = [];
 			for(var x = 0; x < 20 ; x++){
 				for(var y = 0 ; y < 10 ; y++){
 					blocks.push({
-						positionX: 20 - (x * 2.1),
-						positionY: 10 - (y * 2.1)
+						positionX: 200 - (x * 21),
+						positionY: 100 - (y * 21)
 					});
 				}
 			}
@@ -71,7 +72,7 @@
 				program.setBuffers({       
 					'square': {
 						attribute: 'aVertexPosition',
-						value: new Float32Array([1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0]),
+						value: new Float32Array([10, 10, 0, -10, 10, 0, 10, -10, 0, -10, -10, 0]),
 						size: 3
 					}
 				});
@@ -104,11 +105,6 @@
 			function doLogic(app){
 				ball.x += ballSpeed.x;
 				ball.y += ballSpeed.y;
-
-				if(ball.y > 40)
-				{
-					alert('glah');
-				}
 			}
 
 			function renderScene(app){
@@ -117,19 +113,21 @@
 				program = app.program,
 				camera = app.camera;
 
+				camera.projection.frustum(-250, 250, -250, 250, -1, 1);
+
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 				program.setBuffer('square');
 				program.setUniform('uPMatrix', camera.projection);
 
 				for(var x = 0; x < blocks.length; x++){		
 					camera.modelView.id();			
-					camera.modelView.$translate(blocks[x].positionX, blocks[x].positionY, -70);				
+					camera.modelView.$translate(blocks[x].positionX, blocks[x].positionY, -1);				
 					program.setUniform('uMVMatrix', camera.modelView);		
 					gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-				}
+				} 
 
-				camera.modelView.id();			
-				camera.modelView.$translate(ball.x, ball.y, -70);
+				camera.modelView.id();		
+				camera.modelView.$translate(ball.x, ball.y, -1);
 				program.setUniform('uMVMatrix', camera.modelView);		
 				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 			}
