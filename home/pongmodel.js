@@ -21,9 +21,9 @@ Pong.GameModel = function(width, height) {
 	this.width = width;
 	this.height = height;
 	this.paddleSpeed = 20;
-	this.playerPaddle = new Pong.Entity(-250, 0, 20, 40, "trans.png");
-	this.opponentPaddle = new Pong.Paddle(250, 0, 20, 40, "trans.png);
-	this.ball = new Pong.Ball(0, 0, 20, 20, "trans.png");
+	this.playerPaddle = new Pong.Entity(0, 0, 20, 40, "trans.png");
+	this.opponentPaddle = new Pong.Entity(500, 0, 20, 40, "trans.png");
+	this.ball = new Pong.Entity(250, 250, 20, 20, "trans.png");
 };
 
 Pong.GameModel.prototype.getModels = function() {

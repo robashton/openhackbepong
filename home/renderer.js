@@ -6,9 +6,9 @@ Renderer.Engine = function(canvasId, model)
 	this.model = model;
 	var engine = this;
 
-	PhiloGL('game', {
+	PhiloGL(canvasId, {
 		context: {
-			//	debug: true
+				debug: true
 		},
 		program: {
 			from: 'ids',
@@ -30,7 +30,7 @@ Renderer.Engine = function(canvasId, model)
 			engine.app = app;
 
 			gl.viewport(0, 0, canvas.width, canvas.height);
-			camera.projection.frustum(-250, 250, -250, 250, -1, 1);
+			camera.projection.frustum(0, 500, 0, 500, -1, 1);
 			gl.clearColor(0, 0, 255, 1);
 			gl.clearDepth(1);
 			gl.disable(gl.DEPTH_TEST);
@@ -40,29 +40,33 @@ Renderer.Engine = function(canvasId, model)
 
 			program.setBuffers({       
 				'aVertexPosition': {
-				attribute: 'aVertexPosition',
-				value: new Float32Array([ -1.0, -1.0, 0, 
-													1.0, -1.0, 0, 
-													1.0,  1.0, 0, 
-													-1.0, 1.0, 0]),
-				size: 3
+					attribute: 'aVertexPosition',
+					value: new Float32Array([ -1.0, -1.0, 0, 
+														1.0, -1.0, 0, 
+														1.0,  1.0, 0, 
+														-1.0, 1.0, 0]),
+					size: 3
 				},
 				'aTextureCoord': {
-				attribute: 'aTextureCoord',
-				value: new Float32Array([
-													1.0, 1.0,
-													0.0, 1.0,
-													0.0, 0.0,
-													1.0, 0.0  ]),
-				size: 2
+					attribute: 'aTextureCoord',
+					value: new Float32Array([
+														1.0, 1.0,
+														0.0, 1.0,
+														0.0, 0.0,
+														1.0, 0.0  ]),
+					size: 2
 				},
 				'indices': {
-				value: new Uint16Array([0, 1, 2, 0, 2, 3]),
-				bufferType: gl.ELEMENT_ARRAY_BUFFER,
-				size: 1
-			}
-		});
-};
+					value: new Uint16Array([0, 1, 2, 0, 2, 3]),
+					bufferType: gl.ELEMENT_ARRAY_BUFFER,
+					size: 1
+				}
+			});
+
+			console.log('Ended on load');
+		}
+	});
+}
 
 Renderer.Engine.prototype.renderScene = function(){
 	var models = model.getModels();
@@ -88,7 +92,7 @@ Renderer.Engine.prototype.renderScene = function(){
 	}			
 };
 
-Renderer.Engine.prototype.renderQuad(model)
+Renderer.Engine.prototype.renderQuad = function(model)
 {
 	var gl = app.gl,
 	canvas = app.canvas,

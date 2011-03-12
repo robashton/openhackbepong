@@ -18,7 +18,7 @@ Controllers.GameController.prototype.registerPaddleDownState = function(state) {
   this._paddleUpDownState.down = state;
 };
 
-Controllers.GameController.prototype.doLogic = function(
+Controllers.GameController.prototype.doLogic = function() {
 	if (this._paddleUpDownState.up) {			 
 		this._model.sendPlayerImpulseUp();
 		this._publisher.notifyPlayerPaddlePushedUp();

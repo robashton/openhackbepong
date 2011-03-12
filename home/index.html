@@ -1,10 +1,13 @@
 <html>
 	<head>
 		<script src="jquery-1.5.1.min.js"></script> 
-		<script src="gamemodel.js"></script>
 		<script src="PhiloGL.js"></script> 
-		<script src="game.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
+		<script src="/pongmodel.js"></script>
+		<script src="/renderer.js"></script>
+		<script src="/messaging.js"></script>
+		<script src="/coordination.js"></script>
+		<script src="/controllers.js"></script>
 
 		<script id="shader-fs" type="x-shader/x-fragment"> 
 		  #ifdef GL_ES
@@ -34,47 +37,45 @@
 		  }
 		</script>
 
-	 <script type="text/javascript">
+
+	<script type="text/javascript">
+
 		$(document).ready(function(){
-			$('#playing').hide();
 
-		 socket = new io.Socket(); 
-		 socket.connect();
-		 socket.on('connect', function(){
+			var socket = new io.Socket(); 
+			socket.connect(); 
 
-		 });
-		 socket.on('message', function(data){
-			switch(data.message)
-			{
-				case 'start':
-					$('#waiting').hide();
-					$('#zombied').hide();
-					$('#playing').show();
-					webGLStart();
-				break;
-            case "otherdisconnected":
-					$('#zombied').show();
-					$('#playing').hide();       
-			   break;
-				case 'paddlepushed':
-					console.log("Received a message from other client: " + data.speed);
-					ReceivePaddlePushed(data.speed);
-				break;
-				
-			}	
-		 });
-		 socket.on('disconnect', function(){ 
-				alert('You have been disconnected');
-		 });
+	 		socket.on('connect', function(){
 
-		$('#startGame').click(function(){
-			$('#waiting').show();
-			$('#zombied').hide();
-			$('#playing').hide();
-			socket.send({ message: 'startgame'});
+			 });
+			 socket.on('message', function(data){
+				switch(data.message)
+				{
+					case 'start':
+
+					break;
+		         case "otherdisconnected":
+		 
+					break;
+					case 'paddlepushed':
+			
+					break;				
+				}	
+			 });
+			 socket.on('disconnect', function(){ 
+					alert('You have been disconnected');
+			 });
+
+			var pongModel = new Pong.GameModel(500, 500);
+			var renderer = new Renderer.Engine('game', pongModel);
+			var publisher = new Messaging.Publisher(socket);
+			var controller = new Controllers.GameController(pongModel, publisher);
+			var coordinator = new Coordination.Coordinator(renderer, controller);
+
+			setInterval(coordinator.tick, 1000 / 30);
+		
 		});
 
-		});
 	</script>
 
 	</head>
@@ -86,6 +87,7 @@
 
 		<div id="playing">
 			<canvas id="game" style="border: none;" width="500" height="500">
+				
 			</canvas>
 		</div>
 
