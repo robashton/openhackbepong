@@ -20,9 +20,17 @@ Pong.Entity.prototype.doLogic = function() {
 Pong.GameModel = function(width, height) {
 	this.width = width;
 	this.height = height;
-	this.playerPaddle = new Pong.Entity(-250, 0, 20, 40, "texture.gif");
-	this.opponentPaddle = new Pong.Paddle(250, 0, 20, 40, "texture.gif");
-	this.ball = new Pong.Ball(0, 0, 20, 20, "texture.gif");
+	this.playerPaddle = new Pong.Entity(-250, 0, 20, 40, "trans.png");
+	this.opponentPaddle = new Pong.Paddle(250, 0, 20, 40, "trans.png);
+	this.ball = new Pong.Ball(0, 0, 20, 20, "trans.png");
+};
+
+Pong.GameModel.prototype.getModels = function() {
+	return [
+		this.ball,
+		this.opponentPaddle,
+		this.playerPaddle
+	];
 };
 
 Pong.GameModel.prototype.doLogic = function() {
