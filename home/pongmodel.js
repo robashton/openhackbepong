@@ -20,6 +20,7 @@ Pong.Entity.prototype.doLogic = function() {
 Pong.GameModel = function(width, height) {
 	this.width = width;
 	this.height = height;
+	this.paddleSpeed = 20;
 	this.playerPaddle = new Pong.Entity(-250, 0, 20, 40, "trans.png");
 	this.opponentPaddle = new Pong.Paddle(250, 0, 20, 40, "trans.png);
 	this.ball = new Pong.Ball(0, 0, 20, 20, "trans.png");
@@ -72,12 +73,19 @@ Pong.GameModel.prototype.checkModelBounds = function(model) {
    }
 };
 
-Pong.GameModel.prototype.sendPlayerImpulse = function(x, y) {
-	this.playerPaddle.velocity.x += x;
-	this.playerPaddle.velocity.y += y;
+Pong.GameModel.prototype.sendPlayerImpulseUp = function() {
+	this.playerPaddle.velocity.y += this.paddleSpeed;
 };
 
-Pong.GameModel.prototype.sendOpponentImpulse = function(x, y) {
-	this.opponentPaddle.velocity.x += x;
-	this.opponentPaddle.velocity.y += y;
+Pong.GameModel.prototype.sendPlayerImpulseDown = function() {
+	this.playerPaddle.velocity.y -= this.paddleSpeed;
 };
+
+Pong.GameModel.prototype.sendOpponentImpulseUp = function() {
+	this.opponentPaddle.velocity.y += this.paddleSpeed;
+};
+
+Pong.GameModel.prototype.sendOpponentImpulseUp = function() {
+	this.opponentPaddle.velocity.y -= this.paddleSpeed;
+};
+
