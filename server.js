@@ -42,6 +42,11 @@ socket.on('connection', function(client){
 		  return;
 		}
 
+		if(client == waitingClient){
+			waitingClient = null;
+			return;
+		}
+
       var game = client.game;
 
 		if(game.clientOne == client) 
