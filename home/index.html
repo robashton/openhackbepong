@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<script src="jquery-1.5.1.min.js"></script> 
+		<script src="gamemodel.js"></script>
 		<script src="PhiloGL.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
 
@@ -29,22 +30,7 @@
 
 			var idealTimePerFrame = 1000 / 30;
 			var leftover = 0.0;
-			var timeAtLastFrame = new Date().getTime();
-
-			var ballSpeed = { x: 0.0, y: 1.0 };
-			var ball = { x: 5, y: 5 };
-
-			var blocks = [];
-			for(var x = 0; x < 20 ; x++){
-				for(var y = 0 ; y < 10 ; y++){
-					blocks.push({
-						positionX: 200 - (x * 21),
-						positionY: 100 - (y * 21)
-					});
-				}
-			}
-			
-	
+			var timeAtLastFrame = new Date().getTime();	
 
 			function webGLStart() {
 			  PhiloGL('game', {
@@ -63,7 +49,8 @@
 				camera = app.camera;
 
 				gl.viewport(0, 0, canvas.width, canvas.height);
-				gl.clearColor(0, 0, 0, 1);
+				camera.projection.frustum(-250, 250, -250, 250, -1, 1);
+				gl.clearColor(0, 0, 255, 1);
 				gl.clearDepth(1);
 				gl.enable(gl.DEPTH_TEST);
 				gl.depthFunc(gl.LEQUAL);
@@ -71,7 +58,7 @@
 				program.setBuffers({       
 					'square': {
 						attribute: 'aVertexPosition',
-						value: new Float32Array([10, 10, 0, -10, 10, 0, 10, -10, 0, -10, -10, 0]),
+						value: new Float32Array([1, 1, 0, -1, 1, 0, 1, -1, 0, -1, -1, 0]),
 						size: 3
 					}
 				});
@@ -102,8 +89,7 @@
 			}
 
 			function doLogic(app){
-				ball.x += ballSpeed.x;
-				ball.y += ballSpeed.y;
+				DoGameLoop();
 			}
 
 			function renderScene(app){
@@ -111,27 +97,34 @@
 				canvas = app.canvas,
 				program = app.program,
 				camera = app.camera;
-
-				camera.projection.frustum(-250, 250, -250, 250, -1, 1);
-
+			
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 				program.setBuffer('square');
 				program.setUniform('uPMatrix', camera.projection);
 
-				for(var x = 0; x < blocks.length; x++){		
-					camera.modelView.id();			
-					camera.modelView.$translate(blocks[x].positionX, blocks[x].positionY, -1);				
-					program.setUniform('uMVMatrix', camera.modelView);		
-					gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-				} 
-
-				camera.modelView.id();		
-				camera.modelView.$translate(ball.x, ball.y, -1);
-				program.setUniform('uMVMatrix', camera.modelView);		
-				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+				var g=GameState;
+				renderQuad(app, g.Pads[0]);
+				renderQuad(app, g.Pads[1]);
+				renderQuad(app, g.Ball);
+				
 			}
 
-
+			function renderQuad(app, model)
+			{
+				var gl = app.gl,
+				canvas = app.canvas,
+				program = app.program,
+				camera = app.camera;
+			
+				camera.modelView.id();
+				camera.modelView.$translate(model.x, model.y, -1);
+				camera.modelView.$scale(model.width, model.height, 1);				
+			
+				program.setUniform('uMVMatrix', camera.modelView);		
+				gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);	
+				
+				console.log('Rendering: ' + model.width + ' ' + model.height + ' ' + model.x + ' ' + model.y);
+			}
 			
 	
 		</script>
