@@ -19,31 +19,25 @@ function BuildModel(id, x, y, width, height)
 function BuildGameState()
 {
    return {
-      Pads: [BuildModel(PadId1,-240, 0, 5, 15), BuildModel(PadId2, 240, 0, 5, 15) ],
-      Ball: BuildModel(BallId, 0, 0, 50, 50),
-      Bounds: {x:-250,y:-250,right:250,bottom:250}
+      Pads: [BuildModel(PadId1,-240, 0, 5, 50), BuildModel(PadId2, 240, 0, 5, 50) ],
+      Ball: BuildModel(BallId, 0, 0, 5, 5),
+      Bounds: {x:-250,y:-250,right:250,bottom:250},
+      Score: [0,0],
+      Waiting: true
    };
 }
 
-GameState = BuildGameState();
-
 function Move(m)
 {
-   var b = GameState.Bounds;
    m.x+= m.velx;
    m.y+= m.vely;
    m.velx*=(1-m.friction);
    m.vely*=(1-m.friction);
-   if (m.x<b.x) 
-   { 
-      m.x+=b.x-m.x; 
-      m.velx=-m.velx; 
-   }
-   if (m.x>b.right) 
-   { 
-      m.x-=b.right-m.x; 
-      m.velx=-m.velx; 
-   }
+} 
+
+function CheckBoundaries(m)
+{
+   var b = GameState.Bounds;
    if (m.y<b.y) 
    { 
       m.y+=b.y-m.y; 
@@ -54,21 +48,71 @@ function Move(m)
 //      m.y-=b.bottom-m.y;
       m.vely=-m.vely;
    }
-} 
+}
+
+function BouncePad(nr)
+{
+   var b = GameState.Ball;
+   var m = GameState.Pads[nr];
+   var delta = b.y-m.y;  
+   var edge = m.height;
+   // left & right boundaries
+   if (Math.abs(b.x)<Math.abs(m.x))
+      return;
+   // top & bottom boundaries
+   if (Math.abs(delta) < edge)
+   {
+       b.vely+=delta;
+       b.velx=-b.velx;
+       b.x+=b.velx;
+       b.y+=b.vely;
+       
+   }
+   else
+   {
+      GameState.Score[nr]++; 
+      GameState.Waiting = true;
+   }
+}
+
+
 
 function Push(m,x,y)
 {
-   m.velx+=x;
-   m.vely+=y;     
+   if (GameState.Waiting===true)
+   {
+      GameState.Ball.velx = -2;
+      GameState.Ball.vely = 0;      
+      GameState.Waiting = false;
+   }
+   else
+   {
+      m.velx+=x;
+      m.vely+=y;
+   }     
 }
 
 function DoGameLoop()
 {
-   for(var i in GameState.Pads){
-     Move(GameState.Pads[i]);
+   Move(GameState.Pads[0]);
+   Move(GameState.Pads[1]);
+   
+   if (GameState.Waiting===true)
+   {
+      GameState.Ball.x=0;
+      GameState.Ball.y=0;
    }
-   Move(GameState.Ball);
+   else
+   {
+      Move(GameState.Ball);
+      BouncePad(0);
+      BouncePad(1);
+      CheckBoundaries(GameState.Ball);
+      CheckBoundaries(GameState.Pads[0]);
+      CheckBoundaries(GameState.Pads[1]);
+   }
 } 
 
+GameState = BuildGameState();
+
 GameState.Ball.friction = 0;
-Push(GameState.Ball,12,-5);
