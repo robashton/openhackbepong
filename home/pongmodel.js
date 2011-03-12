@@ -21,9 +21,9 @@ Pong.GameModel = function(width, height) {
 	this.width = width;
 	this.height = height;
 	this.paddleSpeed = 20;
-	this.playerPaddle = new Pong.Entity(0, 0, 20, 40, "trans.png");
-	this.opponentPaddle = new Pong.Entity(500, 0, 20, 40, "trans.png");
-	this.ball = new Pong.Entity(250, 250, 20, 20, "trans.png");
+	this.playerPaddle = new Pong.Entity(-240, 0, 8, 30, "trans.png");
+	this.opponentPaddle = new Pong.Entity(240, 0, 8, 30, "trans.png");
+	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
 };
 
 Pong.GameModel.prototype.getModels = function() {
@@ -51,7 +51,7 @@ Pong.GameModel.prototype.doLogic = function() {
 };
 
 Pong.GameModel.prototype.checkModelBounds = function(model) {
-   if (model.y < 0) 
+   if (model.y < -250) 
    { 
       model.y -= model.y; 
       model.velocity.y = -model.velocity.y;
@@ -61,7 +61,7 @@ Pong.GameModel.prototype.checkModelBounds = function(model) {
       model.y -= (model.y - this.height);
       model.velocity.y = -model.velocity.y;
    }
-   if (model.x < 0) 
+   if (model.x < -250) 
    { 
       model.x -= model.x; 
       model.velocity.x = -model.velocity.x;
