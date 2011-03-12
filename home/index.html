@@ -104,6 +104,11 @@
 			function doLogic(app){
 				ball.x += ballSpeed.x;
 				ball.y += ballSpeed.y;
+
+				if(ball.y > 50)
+				{
+					alert('glah');
+				}
 			}
 
 			function renderScene(app){
