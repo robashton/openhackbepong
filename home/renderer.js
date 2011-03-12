@@ -69,12 +69,12 @@ Renderer.Engine = function(canvasId, model)
 }
 
 Renderer.Engine.prototype.renderScene = function(){
-	var models = model.getModels();
+	var models = this.model.getModels();
 
-	var gl = app.gl,
-	canvas = app.canvas,
-	program = app.program,
-	camera = app.camera;
+	var gl = this.app.gl,
+	canvas = this.app.canvas,
+	program = this.app.program,
+	camera = this.app.camera;
 
 	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -88,16 +88,16 @@ Renderer.Engine.prototype.renderScene = function(){
    program.setUniform('uSampler', 0);
 
 	for(i in models){
-		renderQuad(models[i]);
+		this.renderQuad(models[i]);
 	}			
 };
 
 Renderer.Engine.prototype.renderQuad = function(model)
 {
-	var gl = app.gl,
-	canvas = app.canvas,
-	program = app.program,
-	camera = app.camera;
+	var gl = this.app.gl,
+	canvas = this.app.canvas,
+	program = this.app.program,
+	camera = this.app.camera;
 
 	camera.modelView.id();
 	camera.modelView.$translate(model.x, model.y, -1);
