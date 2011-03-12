@@ -29,26 +29,32 @@ socket.on('connection', function(client){
 		clientOne: waitingClient,
 		clientTwo: client
 	};	
-
+   game.id = games.length();
 	games.push(game);
 	waitingClient = null;
 
 	setupTheGame(game);
 
   	client.on('message', function(data){
-	
+		
 	});
 	client.on('disconnect', function(){
+      var game = client.game;
+      if (game.disconnected) return;
 
+		if(game.clientOne == client) 
+        game.clientTwo.send({ message: "otherdisconnected" });
+      else 
+        game.clientOne.send({ message: "otherdisconnected" });
+
+      game.disconnected = true;
+      games.splice(game.id, 1);
 	} ); 
 }); 
 
 
 function setupTheGame(game)
 {
-	game.clientOne.clientId = 1;
-	game.clientTwo.clientId = 2;
-
 	game.clientOne.game = game;
 	game.clientTwo.game = game;
 
