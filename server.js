@@ -85,6 +85,7 @@ function startGameWithClient(client){
 }
 
 function removeFromZombieClients(client) {
+  client.zombieId = null;
   zombieClients.splice(client.zombieId, 1);
 }
 

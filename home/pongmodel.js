@@ -7,23 +7,24 @@ Pong.Entity = function(x, y, width, height, texture) {
 	this.height = height;
 	this.texture = texture;
 	this.velocity = { x: 0, y: 0 }
-	this.decay = 0.0;
+	this.decay = 0.5;
 };
 
 Pong.Entity.prototype.doLogic = function() {
 	this.x += this.velocity.x;
 	this.y += this.velocity.y;
-	this.velocity.x *= decay;
-	this.velocity.y *= decay;
+	this.velocity.x *= this.decay;
+	this.velocity.y *= this.decay;
 }
 
 Pong.GameModel = function(width, height) {
 	this.width = width;
 	this.height = height;
-	this.paddleSpeed = 20;
-	this.playerPaddle = new Pong.Entity(-240, 0, 8, 30, "trans.png");
+	this.paddleSpeed = 10;
+	this.playerPaddle = new Pong.Entity(-240, 0, 8, 50, "trans.png");
 	this.opponentPaddle = new Pong.Entity(240, 0, 8, 30, "trans.png");
 	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
+	this.ball.decay = 1.0;
 };
 
 Pong.GameModel.prototype.getModels = function() {
@@ -85,7 +86,7 @@ Pong.GameModel.prototype.sendOpponentImpulseUp = function() {
 	this.opponentPaddle.velocity.y += this.paddleSpeed;
 };
 
-Pong.GameModel.prototype.sendOpponentImpulseUp = function() {
+Pong.GameModel.prototype.sendOpponentImpulseDown = function() {
 	this.opponentPaddle.velocity.y -= this.paddleSpeed;
 };
 

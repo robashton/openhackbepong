@@ -8,7 +8,7 @@ Renderer.Engine = function(canvasId, model)
 
 	PhiloGL(canvasId, {
 		context: {
-				debug: true
+				debug: false
 		},
 		program: {
 			from: 'ids',
@@ -30,7 +30,7 @@ Renderer.Engine = function(canvasId, model)
 			engine.app = app;
 
 			gl.viewport(0, 0, canvas.width, canvas.height);
-			camera.projection.frustum(-250, 250, -250, 250, -1, 1);
+			camera.projection.frustum(-250, 250, -250, 250, 1, -1);
 			gl.clearColor(0, 0, 255, 1);
 			gl.clearDepth(1);
 			gl.disable(gl.DEPTH_TEST);

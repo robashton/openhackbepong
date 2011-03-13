@@ -10,6 +10,18 @@ Controllers.GameController.prototype._model = null;
 Controllers.GameController.prototype._paddleUpDownState = null;
 Controllers.GameController.prototype._publisher = null;
 
+Controllers.GameController.prototype.translateMessageToModel = function(data) {
+	switch(data.message)
+	{
+		case 'paddlepushedup':
+			this._model.sendOpponentImpulseUp();
+		break;
+		case 'paddlepusheddown':
+			this._model.sendOpponentImpulseDown();
+		break;
+	}
+};
+
 Controllers.GameController.prototype.registerPaddleUpState = function(state) {
   this._paddleUpDownState.up = state;
 };

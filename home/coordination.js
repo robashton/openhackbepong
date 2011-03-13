@@ -5,14 +5,8 @@ Coordination.Coordinator = function(renderer, controller) {
 	this._controller = controller;
 	this._timeAtLastFrame = new Date().getTime();
 	this._idealTimePerFrame = 1000 / 30;
-	this._leftOver = 0.0;
+	this._leftover = 0.0;
 }
-
-Coordination.Coordinator.prototype._idealTimePerFrame = null;
-Coordination.Coordinator.prototype._renderer = null;
-Coordination.Coordinator.prototype._controller = null;
-Coordination.Coordinator.prototype._timeAtLastFrame = null;
-Coordination.Coordinator.prototype._leftOver = null;
 
 Coordination.Coordinator.prototype.onTick = function() {
 	var timeAtThisFrame = new Date().getTime();

@@ -42,6 +42,10 @@
 
 		$(document).ready(function(){
 
+			$('#waiting').show();
+			$('#playing').hide();
+			$('#zombied').hide();
+
 			var socket = new io.Socket(); 
 			socket.connect(); 
 
@@ -49,16 +53,24 @@
 
 			 });
 			 socket.on('message', function(data){
+				console.log('Received Message At Top: ' + data.message);
+
 				switch(data.message)
 				{
 					case 'start':
 
+						$('#waiting').hide();
+						$('#playing').show();
+
 					break;
 		         case "otherdisconnected":
-		 
+						
+						$('#playing').hide();
+						$('#zombied').show();		 
+
 					break;
-					case 'paddlepushed':
-			
+					default:
+						controller.translateMessageToModel(data);			
 					break;				
 				}	
 			 });
@@ -73,6 +85,21 @@
 			var coordinator = new Coordination.Coordinator(renderer, controller);
 
 			setInterval(function() {  coordinator.onTick(); }, 1000 / 30);
+         var keyCodes = {S:83,X:88};
+			document.onkeydown = function(event) { 
+				if(event.keyCode == keyCodes.S) controller.registerPaddleUpState(true);
+				if(event.keyCode == keyCodes.X) controller.registerPaddleDownState(true);
+			};
+			document.onkeyup = function(event) { 
+				if(event.keyCode == keyCodes.S) controller.registerPaddleUpState(false);
+				if(event.keyCode == keyCodes.X) controller.registerPaddleDownState(false);
+			};
+
+			$('#startGame').click(function(){
+				$('#waiting').show();
+				$('#zombied').hide();
+				publisher.send({ message: 'startgame' });
+			});
 		
 		});
 
