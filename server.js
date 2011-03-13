@@ -109,11 +109,15 @@ function setupTheGame(game)
 {
 	game.clientOne.game = game;
 	game.clientTwo.game = game;
+	game.clientOne.ready = false;
+	game.clientTwo.ready = false;
 
 	game.clientOne.send({
-		message: 'start'
+		message: 'start',
+		position: 'left'
 	});
 	game.clientTwo.send({
-		message: 'start'
+		message: 'start',
+		position: 'right'
 	});
 }

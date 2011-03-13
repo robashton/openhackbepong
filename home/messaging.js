@@ -17,3 +17,7 @@ Messaging.Publisher.prototype.notifyPlayerPaddlePushedUp = function() {
 Messaging.Publisher.prototype.notifyPlayerPaddlePushedDown = function() {
   this._socket.send({ message: 'paddlepusheddown' });
 };
+
+Messaging.Publisher.prototype.notifyPlayerStarted = function(){
+	this._socket.send({ message: 'opponentstarted'});
+};

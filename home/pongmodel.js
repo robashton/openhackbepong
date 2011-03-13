@@ -70,14 +70,14 @@ Pong.GameModel = function(left, right, top, bottom) {
 	this.playerPaddle = new Pong.Entity(-230, 0, 8, 40, "trans.png");
 	this.opponentPaddle = new Pong.Entity(222, 0, 8, 40, "trans.png");
 	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
+	this.ball.x = -220;
+	this.ball.y = 0;
 
 	this.ball.bounce = 1.0;
 	this.ball.decay = 1.0;
-	this.ball.velocity.x = 2.0;
-	this.ball.velocity.y = 3.0;
-
 	this.ball.collisionCallback = this.onBallHasCollidedWithPaddle;
 };
+
 
 Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 {
@@ -157,6 +157,31 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    { 
 		model.notifyBoundsRight(this.right);
    }
+};
+
+Pong.GameModel.prototype.setPlayerAsLeft = function()
+{
+	this.playerPaddle.x = -230;
+	this.opponentPaddle.x = 222;
+};
+
+Pong.GameModel.prototype.setPlayerAsRight = function()
+{
+	this.playerPaddle.x = 222;
+	this.opponentPaddle.x = -230;
+};
+
+
+Pong.GameModel.prototype.sendPlayerStart = function()
+{
+	this.ball.velocity.x = 2.0;
+	this.ball.velocity.y = 3.0;
+};
+
+Pong.GameModel.prototype.sendOpponentStart = function(velocity)
+{
+	this.ball.velocity.x = 2.0;
+	this.ball.velocity.y = 3.0;
 };
 
 Pong.GameModel.prototype.sendPlayerImpulseUp = function() {

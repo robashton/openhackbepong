@@ -10,7 +10,7 @@ var idealTimePerFrame = 1000 / 30;
 		});
 		
 		currentlyPressedKeys = {};
-		keyCodes ={S:83,X:88,H:72,N:78}
+		keyCodes ={S:83,X:88,H:72,N:78, Space: 32}
 
 		function handleKeyDown(event) {			
          currentlyPressedKeys[event.keyCode] = true
