@@ -41,10 +41,10 @@ Renderer.Engine = function(canvasId, model)
 			program.setBuffers({       
 				'aVertexPosition': {
 					attribute: 'aVertexPosition',
-					value: new Float32Array([ -1.0, -1.0, 0, 
-														1.0, -1.0, 0, 
-														1.0,  1.0, 0, 
-														-1.0, 1.0, 0]),
+					value: new Float32Array([  0.0, 0.0, 0, 
+														1.0, 0.0, 0, 
+														1.0, 1.0, 0, 
+														0.0, 1.0, 0]),
 					size: 3
 				},
 				'aTextureCoord': {

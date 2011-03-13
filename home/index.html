@@ -42,9 +42,7 @@
 
 		$(document).ready(function(){
 
-			$('#waiting').show();
-			$('#playing').hide();
-			$('#zombied').hide();
+			$('#message').text('Waiting for a partner to play with');
 
 			var socket = new io.Socket(); 
 			socket.connect(); 
@@ -53,32 +51,23 @@
 
 			 });
 			 socket.on('message', function(data){
-				console.log('Received Message At Top: ' + data.message);
 
 				switch(data.message)
 				{
 					case 'start':
-
-						$('#waiting').hide();
-						$('#playing').show();
-
+						$('#message').text('Game has started');
 					break;
-		         case "otherdisconnected":
-						
-						$('#playing').hide();
-						$('#zombied').show();		 
-
-					break;
-					default:
-						controller.translateMessageToModel(data);			
-					break;				
+		         case "otherdisconnected":						
+						$('#message').text('The other player has disconnected, hit refresh if you want another game'); 
+					break;			
 				}	
+			    coordinator.processReceivedMessage(data);	
 			 });
 			 socket.on('disconnect', function(){ 
-					alert('You have been disconnected');
+					$('#message').text('You have been disconnected - hit refresh to find another game');	
 			 });
 
-			var pongModel = new Pong.GameModel(500, 500);
+			var pongModel = new Pong.GameModel(-250, 250, 250, -250);
 			var renderer = new Renderer.Engine('game', pongModel);
 			var publisher = new Messaging.Publisher(socket);
 			var controller = new Controllers.GameController(pongModel, publisher);
@@ -96,8 +85,7 @@
 			};
 
 			$('#startGame').click(function(){
-				$('#waiting').show();
-				$('#zombied').hide();
+				$('#message').text('Request for a new game has been sent, waiting for a response');
 				publisher.send({ message: 'startgame' });
 			});
 		
@@ -107,19 +95,11 @@
 
 	</head>
 	<body>		
+    	<div id="playing">
 
-		<div id="waiting">
-			<p>Waiting for the game to start</p>
-		</div>
-
-		<div id="playing">
-			<canvas id="game" style="border: none;" width="500" height="500">
-				
-			</canvas>
-		</div>
-
-		<div id="zombied">
-			<p>The other player left the game, click <span id="startGame">here</span> to start a new game or close this window<p>
+			<p id="message">Waiting for the game to start</p>
+			<canvas id="game" style="border: none;" width="500" height="500"></canvas>
+			
 		</div>
 	</body>
 </html>

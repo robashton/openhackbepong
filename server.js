@@ -95,7 +95,7 @@ function notifyOtherPlayersLeft(client) {
 }
 
 function isClientZombie(client) {
-  if (client.zombieId) return true;
+  if (client.zombieId == null || client.zombieId == undefined) return true;
   return false;
 }
 

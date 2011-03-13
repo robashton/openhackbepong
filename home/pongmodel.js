@@ -15,16 +15,41 @@ Pong.Entity.prototype.doLogic = function() {
 	this.y += this.velocity.y;
 	this.velocity.x *= this.decay;
 	this.velocity.y *= this.decay;
-}
+};
 
-Pong.GameModel = function(width, height) {
-	this.width = width;
-	this.height = height;
+Pong.Entity.prototype.notifyBoundsLeft = function(boundary) {
+		this.x -= this.x - boundary; 
+      this.velocity.x = -this.velocity.x;
+};
+
+Pong.Entity.prototype.notifyBoundsRight = function(boundary) {
+      this.x -= (this.x + this.width) - boundary;
+      this.velocity.x = -this.velocity.x
+};
+
+Pong.Entity.prototype.notifyBoundsTop = function(boundary) {
+ 		this.y -= (this.y + this.height) - boundary;
+      this.velocity.y = -this.velocity.y;
+};
+
+Pong.Entity.prototype.notifyBoundsBottom = function(boundary) {
+		this.y -= this.y- boundary; 
+      this.velocity.y = -this.velocity.y;
+};
+
+Pong.GameModel = function(left, right, top, bottom) {
+	this.left = left;
+	this.right = right;
+	this.top = top;
+	this.bottom = bottom;
+
 	this.paddleSpeed = 10;
-	this.playerPaddle = new Pong.Entity(-240, 0, 8, 50, "trans.png");
+	this.playerPaddle = new Pong.Entity(-240, 0, 8, 30, "trans.png");
 	this.opponentPaddle = new Pong.Entity(240, 0, 8, 30, "trans.png");
 	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
 	this.ball.decay = 1.0;
+	this.ball.velocity.x = 2.0;
+	this.ball.velocity.y = 3.0;
 };
 
 Pong.GameModel.prototype.getModels = function() {
@@ -37,40 +62,37 @@ Pong.GameModel.prototype.getModels = function() {
 
 Pong.GameModel.prototype.doLogic = function() {
 
-	// Tick logic
 	this.playerPaddle.doLogic();
 	this.opponentPaddle.doLogic();
 	this.ball.doLogic();
 
-	// Bound checks
-	this.checkModelBounds(this.ball);
-	this.checkModelBounds(this.playerPaddle);
-	this.checkModelBounds(this.opponentPaddle); 
-
-	// TODO: Check critical collisions (Paddle vs Ball)
-	// TODO: Check loss conditions ( Ball hits left or right wall )
+	this.doPhysics(); 
 };
 
-Pong.GameModel.prototype.checkModelBounds = function(model) {
-   if (model.y < -250) 
+Pong.GameModel.prototype.doPhysics = function() {
+	var models = this.getModels();
+
+	for(var i in models) {
+		this.checkModelAgainstBoundary(models[i]);
+	}
+};
+
+Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
+   if (model.y < this.bottom) 
    { 
-      model.y -= model.y; 
-      model.velocity.y = -model.velocity.y;
+      model.notifyBoundsBottom(this.bottom);
    }
-   if (model.y > this.height) 
+   if ((model.y + model.height) > this.top) 
    { 
-      model.y -= (model.y - this.height);
-      model.velocity.y = -model.velocity.y;
+     	model.notifyBoundsTop(this.top);
    }
-   if (model.x < -250) 
+   if (model.x < this.left) 
    { 
-      model.x -= model.x; 
-      model.velocity.x = -model.velocity.x;
+      model.notifyBoundsLeft(this.left);
    }
-   if (model.x > this.width) 
+   if ((model.x + model.width) > this.right) 
    { 
-      model.x -= (model.x - this.width);
-      model.velocity.x = -model.velocity.x;
+		model.notifyBoundsRight(this.right);
    }
 };
 
