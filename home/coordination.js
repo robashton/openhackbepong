@@ -6,6 +6,8 @@ Coordination.Coordinator = function(renderer, controller) {
 	this._timeAtLastFrame = new Date().getTime();
 	this._idealTimePerFrame = 1000 / 30;
 	this._leftover = 0.0;
+	this._playerLeftScore = 0;
+	this._playerRightScore = 0;
 }
 
 Coordination.Coordinator.prototype.processReceivedMessage = function(data) {

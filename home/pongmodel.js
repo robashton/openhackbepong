@@ -89,8 +89,6 @@ Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 	} else {
 		this.x += this.ball.x - (paddle.x + paddle.width);
 	}
-
-	// Steal the velocity of the paddle?
 	this.velocity.y += paddle.velocity.y;
 };
 
@@ -158,11 +156,6 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
 		model.notifyBoundsRight(this.right);
    }
 };
-
-
-
-
-
 
 Pong.GameModel.prototype.sendLeftPaddleStart = function()
 {
