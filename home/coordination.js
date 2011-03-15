@@ -10,7 +10,7 @@ Coordination.Coordinator = function(renderer, controller) {
 
 Coordination.Coordinator.prototype.processReceivedMessage = function(data) {
 
-	this._controller.translateMessageToModel(data);
+	this._controller.dispatchMessage(data);
 }
 
 Coordination.Coordinator.prototype.onTick = function() {

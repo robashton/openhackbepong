@@ -38,11 +38,13 @@ socket.on('connection', function(client){
       console.log('disconnected callback called!');
 
       if (isClientZombie(client)) {
+		  console.log("Removing zombie client");
         removeFromZombieClients(client);
 		  return;
 		}
 
 		if(client == waitingClient){
+			console.log("Waiting client disconnected, ignoring");
 			waitingClient = null;
 			return;
 		}
@@ -59,7 +61,9 @@ socket.on('connection', function(client){
 });
 
 function routeMessageFromClient(messageFromOtherClient, client){
-	var game = client.game;
+	var game = client.game;	
+	messageFromOtherClient.source = 'server';
+	
 	if(game.clientOne == client)
 		game.clientTwo.send(messageFromOtherClient);
 	else
@@ -90,13 +94,13 @@ function removeFromZombieClients(client) {
 }
 
 function notifyOtherPlayersLeft(client) {
-  client.send({ message: "otherdisconnected" });
+  client.send({ message: "otherdisconnected", source: 'server' });
   addToZombieClients(client);
 }
 
 function isClientZombie(client) {
-  if (client.zombieId == null || client.zombieId == undefined) return true;
-  return false;
+  if (client.zombieId == null || client.zombieId == undefined) return false;
+  return true;
 }
 
 function addToZombieClients(client) {
@@ -109,15 +113,15 @@ function setupTheGame(game)
 {
 	game.clientOne.game = game;
 	game.clientTwo.game = game;
-	game.clientOne.ready = false;
-	game.clientTwo.ready = false;
 
 	game.clientOne.send({
 		message: 'start',
-		position: 'left'
+		position: 'left',
+		source: 'server'
 	});
 	game.clientTwo.send({
 		message: 'start',
-		position: 'right'
+		position: 'right',
+		source: 'server'
 	});
 }

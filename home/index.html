@@ -3,6 +3,7 @@
 		<script src="jquery-1.5.1.min.js"></script> 
 		<script src="PhiloGL.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
+		<script src="/GameStates.js"></script>
 		<script src="/pongmodel.js"></script>
 		<script src="/renderer.js"></script>
 		<script src="/messaging.js"></script>
@@ -57,7 +58,6 @@
 
 			 });
 			 socket.on('message', function(data){
-
 				switch(data.message)
 				{
 					case 'start':
@@ -74,6 +74,7 @@
 			 });
 
 			setInterval(function() {  coordinator.onTick(); }, 1000 / 30);
+
          var keyCodes = {S:83,X:88, Space: 32};
 			document.onkeydown = function(event) { 
 				if(event.keyCode == keyCodes.S) controller.registerPaddleUpState(true);
@@ -84,13 +85,7 @@
 				if(event.keyCode == keyCodes.S) controller.registerPaddleUpState(false);
 				if(event.keyCode == keyCodes.X) controller.registerPaddleDownState(false);
 				if(event.keyCode == keyCodes.Space) controller.registerPaddleSpaceState(false);
-			};
-
-			$('#startGame').click(function(){
-				$('#message').text('Request for a new game has been sent, waiting for a response');
-				publisher.send({ message: 'startgame' });
-			});
-		
+			};		
 		});
 
 	</script>

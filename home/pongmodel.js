@@ -24,13 +24,13 @@ Pong.Entity.prototype.notifyBoundsLeft = function(boundary) {
 };
 
 Pong.Entity.prototype.notifyBoundsRight = function(boundary) {
-      this.x -= (this.x + this.width) - boundary;
-      this.velocity.x = -this.velocity.x
+    this.x -= (this.x + this.width) - boundary;
+    this.velocity.x = -this.velocity.x;
 };
 
 Pong.Entity.prototype.notifyBoundsTop = function(boundary) {
- 		this.y -= (this.y + this.height) - boundary;
-      this.velocity.y = -this.velocity.y;
+    this.y -= (this.y + this.height) - boundary;
+    this.velocity.y = -this.velocity.y;
 };
 
 Pong.Entity.prototype.notifyBoundsBottom = function(boundary) {
@@ -67,8 +67,8 @@ Pong.GameModel = function(left, right, top, bottom) {
 	this.bottom = bottom;
 
 	this.paddleSpeed = 10;
-	this.playerPaddle = new Pong.Entity(-230, 0, 8, 40, "trans.png");
-	this.opponentPaddle = new Pong.Entity(222, 0, 8, 40, "trans.png");
+	this.leftPaddle= new Pong.Entity(-230, 0, 8, 40, "trans.png");
+	this.rightPaddle= new Pong.Entity(222, 0, 8, 40, "trans.png");
 	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
 	this.ball.x = -220;
 	this.ball.y = 0;
@@ -92,20 +92,20 @@ Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 
 	// Steal the velocity of the paddle?
 	this.velocity.y += paddle.velocity.y;
-}
+};
 
 Pong.GameModel.prototype.getModels = function() {
 	return [
 		this.ball,
-		this.opponentPaddle,
-		this.playerPaddle
+		this.rightPaddle,
+		this.leftPaddle
 	];
 };
 
 Pong.GameModel.prototype.doLogic = function() {
 
-	this.playerPaddle.doLogic();
-	this.opponentPaddle.doLogic();
+	this.leftPaddle.doLogic();
+	this.rightPaddle.doLogic();
 	this.ball.doLogic();
 
 	this.doPhysics(); 
@@ -118,7 +118,7 @@ Pong.GameModel.prototype.doPhysics = function() {
 		this.checkModelAgainstBoundary(models[i]);
 	}
 
-	for(var i = 0 ; i < models.length ; i++){
+	for(i = 0 ; i < models.length ; i++){
 		for(var j = i+1 ; j < models.length ; j++) {
 			var modelOne = models[i];
 			var modelTwo = models[j];
@@ -138,7 +138,7 @@ Pong.GameModel.prototype.checkForCollisionBetweenTwoEntities = function(modelOne
 	// Ladies and Gentlemen We have a collision
 	modelOne.notifyOfCollision(modelTwo);
 	modelTwo.notifyOfCollision(modelOne);
-}
+};
 
 Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    if (model.y < this.bottom) 
@@ -147,7 +147,7 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    }
    if ((model.y + model.height) > this.top) 
    { 
-     	model.notifyBoundsTop(this.top);
+        model.notifyBoundsTop(this.top);
    }
    if (model.x < this.left) 
    { 
@@ -159,44 +159,37 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    }
 };
 
-Pong.GameModel.prototype.setPlayerAsLeft = function()
-{
-	this.playerPaddle.x = -230;
-	this.opponentPaddle.x = 222;
-};
-
-Pong.GameModel.prototype.setPlayerAsRight = function()
-{
-	this.playerPaddle.x = 222;
-	this.opponentPaddle.x = -230;
-};
 
 
-Pong.GameModel.prototype.sendPlayerStart = function()
+
+
+
+Pong.GameModel.prototype.sendLeftPaddleStart = function()
 {
 	this.ball.velocity.x = 2.0;
 	this.ball.velocity.y = 3.0;
 };
 
-Pong.GameModel.prototype.sendOpponentStart = function(velocity)
+Pong.GameModel.prototype.sendRightPaddleStart = function(velocity)
 {
 	this.ball.velocity.x = 2.0;
 	this.ball.velocity.y = 3.0;
 };
 
-Pong.GameModel.prototype.sendPlayerImpulseUp = function() {
-	this.playerPaddle.velocity.y += this.paddleSpeed;
+Pong.GameModel.prototype.sendLeftPaddleImpulseUp = function() {
+	this.leftPaddle.velocity.y += this.paddleSpeed;
 };
 
-Pong.GameModel.prototype.sendPlayerImpulseDown = function() {
-	this.playerPaddle.velocity.y -= this.paddleSpeed;
+Pong.GameModel.prototype.sendLeftPaddleImpulseDown = function() {
+	this.leftPaddle.velocity.y -= this.paddleSpeed;
 };
 
-Pong.GameModel.prototype.sendOpponentImpulseUp = function() {
-	this.opponentPaddle.velocity.y += this.paddleSpeed;
+Pong.GameModel.prototype.sendRightPaddleImpulseUp = function() {
+	this.rightPaddle.velocity.y += this.paddleSpeed;
 };
 
-Pong.GameModel.prototype.sendOpponentImpulseDown = function() {
-	this.opponentPaddle.velocity.y -= this.paddleSpeed;
+Pong.GameModel.prototype.sendRightPaddleImpulseDown = function() {
+	this.rightPaddle.velocity.y -= this.paddleSpeed;
 };
+
 

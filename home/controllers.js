@@ -4,91 +4,26 @@ Controllers.GameController = function(model, publisher) {
 	this._model = model;
 	this._publisher = publisher;
 	this._paddleUpDownState = {};
-	this.changeState('awaitinginstructions');
+	this._player = '';
+	this.changeState(GameStates.AwaitingInstructions);
 };
-
-Controllers.GameController.States = {};
-
-Controllers.GameController.States.awaitinginstructions =
-	{
-		init: function() {},
-		start: function(data) {
-			
-			if(data.position == 'left') {
-				this._model.setPlayerAsLeft();
-				this.changeState('goingfirst');		
-			}
-			else {
-				this._model.setPlayerAsRight();
-				this.changeState('awaitingotherplayer');	
-			}			
-
-		},
-		doLogic: function() {}
-	};
-
-
-Controllers.GameController.States.goingfirst = {
-		init: function(controller) {},
-		doLogic: function() {				
-			if (this._paddleUpDownState.space) 
-			{			 
-				this._model.sendPlayerStart();
-				this._publisher.notifyPlayerStarted();
-				this.changeState('playing');
-			}
-		}
-	};
-
-
-Controllers.GameController.States.awaitingotherplayer = {
-		init: function(controller) {},
-		opponentstarted: function(data) {
-			this._model.sendOpponentStart();
-			this.changeState('playing');
-		},
-		doLogic: function() {}
-	};
-
-
-Controllers.GameController.States.playing = {
-		init: function(controller) {},
-		paddlepushedup: function(data){
-			this._model.sendOpponentImpulseUp();
-		},
-		paddlepusheddown: function(data){
-			this._model.sendOpponentImpulseDown();
-		},
-		doLogic: function() {
-
-			if (this._paddleUpDownState.up) {			 
-				this._model.sendPlayerImpulseUp();
-				this._publisher.notifyPlayerPaddlePushedUp();
-			}
-	
-			if (this._paddleUpDownState.down) {
-				this._model.sendPlayerImpulseDown();
-				this._publisher.notifyPlayerPaddlePushedDown();
-			}
-
-			this._model.doLogic();
-		}
-	};
-
 
 Controllers.GameController.prototype.changeState = function(state) {
 	this._currentState = state;
-
-	var callback = Controllers.GameController.States[this._currentState].init;
-	callback.call(this);
+	if(!state){
+		console.log('Missing state');	
+	}
 };
 
-Controllers.GameController.prototype.translateMessageToModel = function(data) {
+Controllers.GameController.prototype.dispatchMessage = function(data) {
 	if(!this._currentState) { return; }
-	var callback = Controllers.GameController.States[this._currentState][data.message];
+	var callback = this._currentState[data.message] || GameStates.Fallback[data.message];
 	
 	if(callback){
 		callback.call(this, data);
+		if(data.source == undefined){
+			this._publisher.publish(data);
+		}        
 	}else	{
 		console.log('Callback not found on ' + this._currentState + ' for ' + data.message);
 	}
@@ -106,18 +41,33 @@ Controllers.GameController.prototype.registerPaddleUpState = function(state) {
   this._paddleUpDownState.up = state;
 };
 
-Controllers.GameController.prototype.registerPaddleDownState = function(state) {
-  this._paddleUpDownState.down = state;
-};
-
 Controllers.GameController.prototype.doLogic = function() {
-	if(!this._currentState) { return; }
+	if(this._player == 'left'){
+		if(this._paddleUpDownState.up){
+			this.dispatchMessage({message:'leftpaddlepushedup'});
+		}
+		else if(this._paddleUpDownState.down){
+			this.dispatchMessage({message:'leftpaddlepusheddown'});
+		}
+		
+		if(this._paddleUpDownState.space){
+			this.dispatchMessage({message: 'leftpaddlestart'});
+		}
+	}
+	else if(this._player == 'right'){
+		if(this._paddleUpDownState.up){
+			this.dispatchMessage({message:'rightpaddlepushedup'});
+		}
+		else if(this._paddleUpDownState.down){
+			this.dispatchMessage({message:'rightpaddlepusheddown'});
+		}
 
-	var callback = Controllers.GameController.States[this._currentState].doLogic;	
-	if(callback){
-		callback.call(this);
-	}	else	{
-		console.log('Callback not found on ' + this._currentState + ' for DoLogic');
+		if(this._paddleUpDownState.space){
+			this.dispatchMessage({message: 'rightpaddlestart'});
+		}
 	}
 
+	this._model.doLogic();
+
 };
+
