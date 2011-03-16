@@ -17,8 +17,8 @@ Controllers.GameController = function(model, publisher) {
 Controllers.GameController.prototype.onChangeState = function(callback){
 	var original = this.onChangeStateCallback;
 	this.onChangeStateCallback = function(){
-		original();
-		callback();	
+		original.call(this);
+		callback.call(this);	
 	};
 };
 

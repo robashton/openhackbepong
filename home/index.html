@@ -58,6 +58,16 @@
 					case PongGameStates.OtherPlayerDisconnected:
 						$('#message').text('You have been disconnected - hit refresh to find another game');
 					break;
+					case PongGameStates.StartRound:
+						if(controller.isGoingFirst){
+							$('#message').text('You\'re going first, press space to begin!');
+						} else {
+							$('#message').text('they\'re going first, be on your guard!');
+						}
+					break;
+					case PongGameStates.Playing:
+						$('#message').text('It\'s on - good luck folks!');
+					break;
 					case PongGameStates.PlayerLeftWins:
 						$('#message').text('Left player has won- hit refresh to find another game');
 					break;
