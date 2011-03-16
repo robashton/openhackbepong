@@ -45,10 +45,22 @@ Controllers.GameController.prototype.setPlayerAsRight = function(){
 
 Controllers.GameController.prototype.setPlayerIsStarting = function(){
 	this.isGoingFirst = true;
+	this.setupModelForPlayerStarting();
 };
 
 Controllers.GameController.prototype.setOtherPlayerIsStarting = function(){
 	this.isGoingFirst = false;
+	this.setupModelForPlayerStarting();
+};
+
+Controllers.GameController.prototype.setupModelForPlayerStarting = function() {
+	if(this.isGoingFirst && this.player == 'left') {
+		this.model.setBallAtLeftPaddle();
+	} else if(!this.isGoingFirst && this.player == 'right') {
+		this.model.setBallAtLeftPaddle();
+	} else {
+		this.model.setBallAtRightPaddle();	
+	}
 };
 
 Controllers.GameController.prototype.dispatchMessage = function(data) {

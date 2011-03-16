@@ -9,6 +9,8 @@ Pong.Entity = function(x, y, width, height, texture) {
 	this.velocity = { x: 0, y: 0 }
 	this.decay = 0.5;
 	this.collisionCallback = null;
+	this.boundsLeftCallback = null;
+	this.boundsRightCallback = null;
 };
 
 Pong.Entity.prototype.doLogic = function() {
@@ -21,11 +23,13 @@ Pong.Entity.prototype.doLogic = function() {
 Pong.Entity.prototype.notifyBoundsLeft = function(boundary) {
 		this.x -= this.x - boundary; 
       this.velocity.x = -this.velocity.x;
+		if(this.boundsLeftCallback) { this.boundsLeftCallback.call(this); }
 };
 
 Pong.Entity.prototype.notifyBoundsRight = function(boundary) {
     this.x -= (this.x + this.width) - boundary;
     this.velocity.x = -this.velocity.x;
+	 if(this.boundsRightCallback) { this.boundsRightCallback.call(this)
 };
 
 Pong.Entity.prototype.notifyBoundsTop = function(boundary) {
