@@ -1,73 +1,109 @@
 var Controllers = Controllers || {};
 
 Controllers.GameController = function(model, publisher) {
-	this._model = model;
-	this._publisher = publisher;
-	this._paddleUpDownState = {};
-	this._player = '';
-	this.changeState(GameStates.AwaitingInstructions);
+	this.model = model;
+	this.publisher = publisher;
+	this.paddleUpDownState = {};
+	this.currentState = null;
+	this.player = '';
+	this.isGoingFirst = false;
+	this.playerLeftScore = 0;
+	this.playerRightScore = 0;
+	this.onChangeStateCallback = function(){};
+	this.changeState(PongGameStates.WaitingForGameToStart);
+
+};
+
+Controllers.GameController.prototype.onChangeState = function(callback){
+	var original = this.onChangeStateCallback;
+	this.onChangeStateCallback = function(){
+		original();
+		callback();	
+	};
 };
 
 Controllers.GameController.prototype.changeState = function(state) {
-	this._currentState = state;
+	this.currentState = state;
+	this.onChangeStateCallback.call(this, this.currentState);
+
+	if(this.currentState.init){
+		this.currentState.init.call(this);		
+	}
+
 	if(!state){
 		console.log('Missing state');	
 	}
 };
 
+Controllers.GameController.prototype.setPlayerAsLeft = function(){
+	this.player = 'left';
+};
+
+Controllers.GameController.prototype.setPlayerAsRight = function(){
+	this.player = 'right';
+};
+
+Controllers.GameController.prototype.setPlayerIsStarting = function(){
+	this.isGoingFirst = true;
+};
+
+Controllers.GameController.prototype.setOtherPlayerIsStarting = function(){
+	this.isGoingFirst = false;
+};
+
 Controllers.GameController.prototype.dispatchMessage = function(data) {
-	if(!this._currentState) { return; }
-	var callback = this._currentState[data.message] || GameStates.Fallback[data.message];
+	if(!this.currentState) { return; }
+	var callback = this.currentState[data.message] || PongGameStates.Fallback[data.message];
 	
 	if(callback){
 		callback.call(this, data);
 		if(data.source == undefined){
-			this._publisher.publish(data);
+			this.publisher.publish(data);
 		}        
 	}else	{
-		console.log('Callback not found on ' + this._currentState + ' for ' + data.message);
+		console.log('Callback not found on ' + this.currentState + ' for ' + data.message);
 	}
 };
 
 Controllers.GameController.prototype.registerPaddleSpaceState = function(state) {
-  this._paddleUpDownState.space = state;
+  this.paddleUpDownState.space = state;
 };
 
 Controllers.GameController.prototype.registerPaddleDownState = function(state) {
-  this._paddleUpDownState.down = state;
+  this.paddleUpDownState.down = state;
 };
 
 Controllers.GameController.prototype.registerPaddleUpState = function(state) {
-  this._paddleUpDownState.up = state;
+  this.paddleUpDownState.up = state;
 };
 
 Controllers.GameController.prototype.doLogic = function() {
-	if(this._player == 'left'){
-		if(this._paddleUpDownState.up){
+	if(this.player == 'left'){
+		if(this.paddleUpDownState.up){
 			this.dispatchMessage({message:'leftpaddlepushedup'});
 		}
-		else if(this._paddleUpDownState.down){
+		else if(this.paddleUpDownState.down){
 			this.dispatchMessage({message:'leftpaddlepusheddown'});
 		}
 		
-		if(this._paddleUpDownState.space){
+		if(this.paddleUpDownState.space && this.isGoingFirst){
 			this.dispatchMessage({message: 'leftpaddlestart'});
 		}
 	}
-	else if(this._player == 'right'){
-		if(this._paddleUpDownState.up){
+	else if(this.player == 'right'){
+		if(this.paddleUpDownState.up){
 			this.dispatchMessage({message:'rightpaddlepushedup'});
 		}
-		else if(this._paddleUpDownState.down){
+		else if(this.paddleUpDownState.down){
 			this.dispatchMessage({message:'rightpaddlepusheddown'});
 		}
 
-		if(this._paddleUpDownState.space){
+		if(this.paddleUpDownState.space && this.isGoingFirst){
 			this.dispatchMessage({message: 'rightpaddlestart'});
 		}
 	}
 
-	this._model.doLogic();
+	this.model.doLogic();
 
 };
 

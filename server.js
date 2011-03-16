@@ -29,6 +29,9 @@ socket.on('connection', function(client){
 			case 'startgame':
 				startGameWithClient(client);
 			break;
+			case 'waitingforround':
+				startGameRound(client);
+			break;
 			default:
 				routeMessageFromClient(data, client);
 			break;
@@ -69,6 +72,16 @@ function routeMessageFromClient(messageFromOtherClient, client){
 	else
 		game.clientOne.send(messageFromOtherClient);
 }
+
+function startGameRound(client) {
+	if(client.game.clientOne == client){
+		client.send({message: 'roundstart', goingFirst: true, source: 'server'});	
+	}
+	else
+	{
+		client.send({message: 'roundstart', goingFirst: false, source: 'server'})
+	}
+} 
 
 function startGameWithClient(client){
 	if(isClientZombie(client)) {
@@ -115,12 +128,12 @@ function setupTheGame(game)
 	game.clientTwo.game = game;
 
 	game.clientOne.send({
-		message: 'start',
+		message: 'gamestart',
 		position: 'left',
 		source: 'server'
 	});
 	game.clientTwo.send({
-		message: 'start',
+		message: 'gamestart',
 		position: 'right',
 		source: 'server'
 	});

@@ -3,7 +3,7 @@
 		<script src="jquery-1.5.1.min.js"></script> 
 		<script src="PhiloGL.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
-		<script src="/GameStates.js"></script>
+		<script src="/PongGameStates.js"></script>
 		<script src="/pongmodel.js"></script>
 		<script src="/renderer.js"></script>
 		<script src="/messaging.js"></script>
@@ -52,21 +52,30 @@
 			var publisher = new Messaging.Publisher(socket);
 			var controller = new Controllers.GameController(pongModel, publisher);
 			var coordinator = new Coordination.Coordinator(renderer, controller);
+		
+			controller.onChangeState(function(){
+				switch(this.currentState){
+					case PongGameStates.OtherPlayerDisconnected:
+						$('#message').text('You have been disconnected - hit refresh to find another game');
+					break;
+					case PongGameStates.PlayerLeftWins:
+						$('#message').text('Left player has won- hit refresh to find another game');
+					break;
+					case PongGameStates.PlayerRightWins:
+						$('#message').text('Right player has won- hit refresh to find another game');
+					break;
+					case PongGameStates.PlayerScored:
+						// Update score :-)
+					break;
+				}
+			});
+
 
 			socket.connect(); 
 	 		socket.on('connect', function(){
 
 			 });
 			 socket.on('message', function(data){
-				switch(data.message)
-				{
-					case 'start':
-						$('#message').text('Game has started');
-					break;
-		         case "otherdisconnected":						
-						$('#message').text('The other player has disconnected, hit refresh if you want another game'); 
-					break;			
-				}	
 			    coordinator.processReceivedMessage(data);	
 			 });
 			 socket.on('disconnect', function(){ 
@@ -98,7 +107,7 @@
 			<canvas id="game" style="border: none;" width="500" height="500"></canvas>
 			
 			<div class="scorecontainer">
-				<span id="score"></div>
+				<span id="score"></span>
 			</div>
 		</div>
 	</body>
