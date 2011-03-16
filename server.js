@@ -129,12 +129,12 @@ function setupTheGame(game)
 
 	game.clientOne.send({
 		message: 'gamestart',
-		position: 'left',
+		player: 'left',
 		source: 'server'
 	});
 	game.clientTwo.send({
 		message: 'gamestart',
-		position: 'right',
+		player: 'right',
 		source: 'server'
 	});
 }

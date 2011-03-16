@@ -2,7 +2,7 @@ var PongGameStates = PongGameStates || {};
 
 PongGameStates.WaitingForGameToStart = {
 		gamestart: function(data) {
-			if(data.player = 'left'){
+			if(data.player == 'left'){
 				this.setPlayerAsLeft();
 			} else
 			{
