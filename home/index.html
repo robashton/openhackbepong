@@ -75,7 +75,7 @@
 						$('#message').text('Right player has won- hit refresh to find another game');
 					break;
 					case PongGameStates.PlayerScored:
-						// Update score :-)
+						$('#score').text(controller.playerLeftScore + ' - ' + controller.playerRightScore);
 					break;
 				}
 			});
@@ -117,7 +117,7 @@
 			<canvas id="game" style="border: none;" width="500" height="500"></canvas>
 			
 			<div class="scorecontainer">
-				<span id="score"></span>
+				<span id="score">0 - 0</span>
 			</div>
 		</div>
 	</body>

@@ -29,7 +29,7 @@ Pong.Entity.prototype.notifyBoundsLeft = function(boundary) {
 Pong.Entity.prototype.notifyBoundsRight = function(boundary) {
     this.x -= (this.x + this.width) - boundary;
     this.velocity.x = -this.velocity.x;
-	 if(this.boundsRightCallback) { this.boundsRightCallback.call(this)
+	 if(this.boundsRightCallback) { this.boundsRightCallback.call(this); }
 };
 
 Pong.Entity.prototype.notifyBoundsTop = function(boundary) {
@@ -91,7 +91,7 @@ Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 	if(vectorToPaddle.x < 0) {
 		this.x -= paddle.x -(this.x + this.width);
 	} else {
-		this.x += this.ball.x - (paddle.x + paddle.width);
+		this.x += this.x - (paddle.x + paddle.width);
 	}
 	this.velocity.y += paddle.velocity.y;
 };
