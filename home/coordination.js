@@ -1,6 +1,6 @@
 var Coordination = Coordination || {};
 
-Coordination.Coordinator = function(renderer, controller) {
+Coordination.Coordinator = function(renderer, controller) {x
 	this._renderer = renderer;
 	this._controller = controller;
 	this._timeAtLastFrame = new Date().getTime();

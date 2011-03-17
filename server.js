@@ -16,7 +16,6 @@ server.listen(80);
 // socket.io 
 var socket = io.listen(server); 
 
-
 var games = [];
 var zombieClients = [];
 var waitingClient = null;
@@ -31,6 +30,9 @@ socket.on('connection', function(client){
 			break;
 			case 'waitingforround':
 				startGameRound(client);
+			break;
+			case: 'finished':
+				addToZombieClients(client);
 			break;
 			default:
 				routeMessageFromClient(data, client);

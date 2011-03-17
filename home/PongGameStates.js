@@ -88,7 +88,9 @@ PongGameStates.PlayerRightWins = {
 };
 
 PongGameStates.GameOver = {
-	// NADA (for now, perhaps we could have AWAITING NEW GAME WTFLOL)	
+	init: function(){
+		this.publisher.publish({message: 'finished'});
+	}
 };
 
 PongGameStates.OtherPlayerDisconnected = {
