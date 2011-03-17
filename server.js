@@ -78,21 +78,35 @@ socket.on('connection', function(client){
 function routeMessageFromClient(messageFromOtherClient, client){
 	var game = client.game;	
 	messageFromOtherClient.source = 'server';
+
+	if(messageFromOtherClient.message == 'leftplayerscored'){
+		console.log('Left client scored');
+		game.clientOne.goingFirst = true;
+		game.clientTwo.goingFirst = false;
+	}
+	else if(messageFromOtherClient.message == 'rightplayerscored'){
+		console.log('Right client scored');
+		game.clientOne.goingFirst = false;
+		game.clientTwo.goingFirst = true;
+	}
 	
 	if(game.clientOne == client)
+	{
 		game.clientTwo.send(messageFromOtherClient);
-	else
-		game.clientOne.send(messageFromOtherClient);
-}
-
-function startGameRound(client) {
-	if(client.game.clientOne == client){
-		client.send({message: 'roundstart', goingFirst: true, source: 'server'});	
 	}
 	else
 	{
-		client.send({message: 'roundstart', goingFirst: false, source: 'server'})
+		game.clientOne.send(messageFromOtherClient);
 	}
+}
+
+function startGameRound(client) {
+
+	console.log("Starting round, going first is " + client.goingFirst);
+	
+	var msg = {message: 'roundstart', goingFirst: client.goingFirst, source: 'server'};
+	client.send(msg);
+	client.goingFirst = false;
 } 
 
 function startGameWithClient(client){
@@ -138,6 +152,9 @@ function setupTheGame(game)
 {
 	game.clientOne.game = game;
 	game.clientTwo.game = game;
+
+	game.clientOne.goingFirst = true;
+	game.clientTwo.goingFirst = false;
 
 	game.clientOne.send({
 		message: 'gamestart',

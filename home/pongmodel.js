@@ -71,10 +71,10 @@ Pong.GameModel = function(left, right, top, bottom) {
 	this.bottom = bottom;
 
 	this.paddleSpeed = 10;
-	this.leftPaddle= new Pong.Entity(-230, 0, 8, 40, "trans.png");
-	this.rightPaddle= new Pong.Entity(222, 0, 8, 40, "trans.png");
+	this.leftPaddle= new Pong.Entity(-360, 0, 10, 60, "trans.png");
+	this.rightPaddle= new Pong.Entity(355, 0, 10, 60, "trans.png");
 	this.ball = new Pong.Entity(0, 0, 5, 5, "trans.png");
-	this.ball.x = -220;
+	this.ball.x = 0;
 	this.ball.y = 0;
 
 	this.ball.bounce = 1.1;
@@ -171,14 +171,14 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
 Pong.GameModel.prototype.setBallAtLeftPaddle = function(){
 	this.ball.velocity.x = 0.0;
 	this.ball.velocity.y = 0.0;
-	this.ball.x = -220;
+	this.ball.x = -345;
 	this.ball.y = 0;
 };
 
 Pong.GameModel.prototype.setBallAtRightPaddle = function() {
 	this.ball.velocity.x = 0.0;
 	this.ball.velocity.y = 0.0;
-	this.ball.x = 225;
+	this.ball.x = 340;
 	this.ball.y = 0;
 };
 
@@ -190,11 +190,11 @@ Pong.GameModel.prototype.sendLeftPaddleStart = function() {
 		this.ball.velocity.y = 3.0;	
 	}
 		
-	this.ball.velocity.x = 2.0;
+	this.ball.velocity.x = 3.5;
 };
 
 Pong.GameModel.prototype.sendRightPaddleStart = function() {
-	this.ball.velocity.x = 2.0;
+	this.ball.velocity.x = -3.5;
 	if(this.ball.y - this.rightPaddle.y < 0){
 		this.ball.velocity.y = -3.0;	
 	} else {

@@ -47,8 +47,8 @@
 
 			var socket = new io.Socket(); 
 
-			var pongModel = new Pong.GameModel(-250, 250, 250, -250);
-					var renderer = new Renderer.Engine('game', pongModel);
+			var pongModel = new Pong.GameModel(-375, 375, 250, -250);
+			var renderer = new Renderer.Engine('game', pongModel);
 			var publisher = new Messaging.Publisher(socket);
 			var controller = new Controllers.GameController(pongModel, publisher);
 			var coordinator = new Coordination.Coordinator(renderer, controller);
@@ -115,7 +115,7 @@
     	<div id="playing">
 
 			<p id="message">Waiting for the game to start</p>
-			<canvas id="game" style="border: none;" width="500" height="500"></canvas>
+			<canvas id="game" style="border: none;" width="750" height="500"></canvas>
 			
 			<div class="scorecontainer">
 				<span id="score">0 - 0</span>

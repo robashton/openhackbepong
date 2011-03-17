@@ -99,10 +99,13 @@ Controllers.GameController.prototype.dispatchMessage = function(data) {
 	var callback = this.currentState[data.message] || PongGameStates.Fallback[data.message];
 	
 	if(callback){
-		callback.call(this, data);
+
 		if(data.source == undefined){
 			this.publisher.publish(data);
-		}        
+		}  
+
+		callback.call(this, data);
+	      
 	}else	{
 		console.log('Callback not found on ' + this.currentState + ' for ' + data.message);
 	}
