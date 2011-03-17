@@ -11,7 +11,7 @@ server = http.createServer(function(req, res){
 	.deliver(WEBROOT, req, res)
 	.addHeader('Cache-Control', 'no-cache');
 });
-server.listen(8090);
+server.listen(80);
   
 // socket.io 
 var socket = io.listen(server); 

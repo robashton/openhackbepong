@@ -16,12 +16,10 @@ Controllers.GameController = function(model, publisher) {
 
 	// Hackity hack hack I just want it done now.
 	this.model.ball.boundsLeftCallback = function() {
-		console.log('Left');
 		controller.dispatchMessage({message: 'rightplayerscored'});
 	};
 		
 	this.model.ball.boundsRightCallback = function() {
-		console.log('Right');
 		controller.dispatchMessage({message: 'leftplayerscored'});
 	};
 
