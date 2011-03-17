@@ -27,6 +27,7 @@ Controllers.GameController = function(model, publisher) {
 		ballCollisionCallback.call(this, paddle);
 
 		// An attempt at manual synchronisation without caring about 'ticks'
+		// Seems to work so we'll go with that ;-)
 		controller.publisher.publish({
 					message: 'paddlehitball', 
 					x: this.x, 

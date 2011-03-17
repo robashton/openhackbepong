@@ -32,9 +32,19 @@ socket.on('connection', function(client){
 				startGameRound(client);
 			break;
 			case 'finished':
-				addToZombieClients(client);
+				if(client.game == null) return;
+
+				var game = client.game;   			
+
+				addToZombieClients(game.clientOne);		
+		 		addToZombieClients(game.clientTwo);
+				games.splice(game.id, 1);
+	
 			break;
 			default:
+				
+				if(isClientZombie(client)) return; // discard
+
 				routeMessageFromClient(data, client);
 			break;
       }

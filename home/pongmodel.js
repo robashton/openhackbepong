@@ -95,6 +95,7 @@ Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 	}
 	this.velocity.y += paddle.velocity.y;
 	this.velocity.x *= this.bounce; // faster and faster innit
+	this.velocity.y *= this.bounce; // faster and faster innit
 };
 
 Pong.GameModel.prototype.getModels = function() {
