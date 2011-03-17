@@ -9,6 +9,7 @@
 		<script src="/messaging.js"></script>
 		<script src="/coordination.js"></script>
 		<script src="/controllers.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css"/>
 
 		<script id="shader-fs" type="x-shader/x-fragment"> 
 		  #ifdef GL_ES
@@ -61,9 +62,9 @@
 					break;
 					case PongGameStates.StartRound:
 						if(controller.isGoingFirst){
-							$('#message').text('You\'re going first, press space to begin!');
+							$('#message').text('You\'re going first, press space to begin - or just leave.');
 						} else {
-							$('#message').text('they\'re going first, be on your guard!');
+							$('#message').text('they\'re going first, so wait for them to hit space yeah?');
 						}
 					break;
 					case PongGameStates.Playing:
@@ -122,11 +123,19 @@
 
 	</head>
 	<body>		
+		<h1>Intarweb WebGL Pong</h1>
     	<div id="playing">
-
 			<p id="message">Waiting for the game to start</p>
-			<canvas id="game" style="border: none;" width="750" height="500"></canvas>
-			
+			<div class="gamecontainer">
+				<canvas id="game" style="border: none;" width="750" height="500"></canvas>
+			</div>
+			<div class="instructions">
+				<ul>
+					<li>Er... first one to three</li>
+					<li>S moves the paddle up</li>
+					<li>X moves the paddle down</li>
+				</ul>			
+			</div>
 			<div class="scorecontainer">
 				<span id="score">0 - 0</span>
 			</div>
