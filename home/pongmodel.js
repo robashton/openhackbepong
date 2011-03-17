@@ -161,14 +161,26 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    }
 };
 
-Pong.GameModel.prototype.sendLeftPaddleStart = function()
-{
+Pong.GameModel.prototype.setBallAtLeftPaddle = function(){
+	this.ball.velocity.x = 0.0;
+	this.ball.velocity.y = 0.0;
+	this.ball.x = -220;
+	this.ball.y = 0;
+};
+
+Pong.GameModel.prototype.setBallAtRightPaddle = function() {
+	this.ball.velocity.x = 0.0;
+	this.ball.velocity.y = 0.0;
+	this.ball.x = 225;
+	this.ball.y = 0;
+};
+
+Pong.GameModel.prototype.sendLeftPaddleStart = function() {
 	this.ball.velocity.x = 2.0;
 	this.ball.velocity.y = 3.0;
 };
 
-Pong.GameModel.prototype.sendRightPaddleStart = function(velocity)
-{
+Pong.GameModel.prototype.sendRightPaddleStart = function() {
 	this.ball.velocity.x = 2.0;
 	this.ball.velocity.y = 3.0;
 };
@@ -188,5 +200,3 @@ Pong.GameModel.prototype.sendRightPaddleImpulseUp = function() {
 Pong.GameModel.prototype.sendRightPaddleImpulseDown = function() {
 	this.rightPaddle.velocity.y -= this.paddleSpeed;
 };
-
-

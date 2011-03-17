@@ -12,6 +12,23 @@ Controllers.GameController = function(model, publisher) {
 	this.onChangeStateCallback = function(){};
 	this.changeState(PongGameStates.WaitingForGameToStart);
 
+	// Hackity hack hack I just want it done now.
+	this.model.ball.boundsLeftCallback = function() {
+		this.publisher.publish({message: 'rightplayerscored'});
+	};
+		
+	this.model.ball.boundsLeftCallback = function() {
+		this.publisher.publish({message: 'rightplayerscored'});
+	};
+
+};
+
+Controllers.GameController.prototype.increaseLeftPlayerScore = function(){
+	this.playerLeftScore++;
+};
+
+Controllers.GameController.prototype.increaseRightPlayerScore = function(){
+	this.playerRightScore++;
 };
 
 Controllers.GameController.prototype.onChangeState = function(callback){
