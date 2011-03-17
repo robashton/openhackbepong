@@ -183,13 +183,23 @@ Pong.GameModel.prototype.setBallAtRightPaddle = function() {
 };
 
 Pong.GameModel.prototype.sendLeftPaddleStart = function() {
+	
+	if(this.ball.y - this.leftPaddle.y < 0){
+		this.ball.velocity.y = -3.0;	
+	} else {
+		this.ball.velocity.y = 3.0;	
+	}
+		
 	this.ball.velocity.x = 2.0;
-	this.ball.velocity.y = 3.0;
 };
 
 Pong.GameModel.prototype.sendRightPaddleStart = function() {
 	this.ball.velocity.x = 2.0;
-	this.ball.velocity.y = 3.0;
+	if(this.ball.y - this.rightPaddle.y < 0){
+		this.ball.velocity.y = -3.0;	
+	} else {
+		this.ball.velocity.y = 3.0;	
+	}
 };
 
 Pong.GameModel.prototype.sendLeftPaddleImpulseUp = function() {

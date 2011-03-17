@@ -35,6 +35,18 @@ PongGameStates.StartRound = {
 	rightpaddlestart: function(data) {
 		this.model.sendRightPaddleStart();
 		this.changeState(PongGameStates.Playing);
+	},
+	leftpaddlepushedup: function(data){
+		this.model.sendLeftPaddleImpulseUp();
+	},
+	leftpaddlepusheddown: function(data){
+		this.model.sendLeftPaddleImpulseDown();
+	},
+	rightpaddlepusheddown: function(data){
+		this.model.sendRightPaddleImpulseDown();
+	},
+	rightpaddlepushedup: function(data){
+		this.model.sendRightPaddleImpulseUp();
 	}
 };
 
