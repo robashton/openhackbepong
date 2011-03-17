@@ -80,12 +80,10 @@ function routeMessageFromClient(messageFromOtherClient, client){
 	messageFromOtherClient.source = 'server';
 
 	if(messageFromOtherClient.message == 'leftplayerscored'){
-		console.log('Left client scored');
 		game.clientOne.goingFirst = true;
 		game.clientTwo.goingFirst = false;
 	}
 	else if(messageFromOtherClient.message == 'rightplayerscored'){
-		console.log('Right client scored');
 		game.clientOne.goingFirst = false;
 		game.clientTwo.goingFirst = true;
 	}
@@ -101,9 +99,6 @@ function routeMessageFromClient(messageFromOtherClient, client){
 }
 
 function startGameRound(client) {
-
-	console.log("Starting round, going first is " + client.goingFirst);
-	
 	var msg = {message: 'roundstart', goingFirst: client.goingFirst, source: 'server'};
 	client.send(msg);
 	client.goingFirst = false;

@@ -70,10 +70,20 @@
 						$('#message').text('It\'s on - good luck folks!');
 					break;
 					case PongGameStates.PlayerLeftWins:
-						$('#message').text('Left player has won- hit refresh to find another game');
+						if(controller.player == 'left'){
+							$('#message').text('You\'ve won, woop-de-doo, hit refresh to find another game');
+						}
+						else {
+							$('#message').text('You\'ve lost, boo-hoo, hit refresh to find another game');
+						}
 					break;
 					case PongGameStates.PlayerRightWins:
-						$('#message').text('Right player has won- hit refresh to find another game');
+						if(controller.player == 'right'){
+							$('#message').text('You\'ve won, woop-de-doo, hit refresh to find another game');
+						}
+						else {
+							$('#message').text('You\'ve lost, boo-hoo, hit refresh to find another game');
+						}
 					break;
 					case PongGameStates.PlayerScored:
 						$('#score').text(controller.playerLeftScore + ' - ' + controller.playerRightScore);
