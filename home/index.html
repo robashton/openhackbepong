@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<script src="jquery-1.5.1.min.js"></script> 
+		<script src="jquery-1.5.1.min.js"></script>
 		<script src="PhiloGL.js"></script> 
 		<script src="/socket.io/socket.io.js"></script> 
 		<script src="/PongGameStates.js"></script>
@@ -48,11 +48,12 @@
 			var socket = new io.Socket(); 
 
 			var pongModel = new Pong.GameModel(-250, 250, 250, -250);
-			var renderer = new Renderer.Engine('game', pongModel);
+					var renderer = new Renderer.Engine('game', pongModel);
 			var publisher = new Messaging.Publisher(socket);
 			var controller = new Controllers.GameController(pongModel, publisher);
 			var coordinator = new Coordination.Coordinator(renderer, controller);
-		
+
+
 			controller.onChangeState(function(){
 				switch(this.currentState){
 					case PongGameStates.OtherPlayerDisconnected:
@@ -104,7 +105,7 @@
 				if(event.keyCode == keyCodes.S) controller.registerPaddleUpState(false);
 				if(event.keyCode == keyCodes.X) controller.registerPaddleDownState(false);
 				if(event.keyCode == keyCodes.Space) controller.registerPaddleSpaceState(false);
-			};		
+			};
 		});
 
 	</script>

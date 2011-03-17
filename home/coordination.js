@@ -1,6 +1,6 @@
 var Coordination = Coordination || {};
 
-Coordination.Coordinator = function(renderer, controller) {x
+Coordination.Coordinator = function(renderer, controller) {
 	this._renderer = renderer;
 	this._controller = controller;
 	this._timeAtLastFrame = new Date().getTime();
@@ -20,7 +20,7 @@ Coordination.Coordinator.prototype.onTick = function() {
 	var timeSinceLastDoLogic = (timeAtThisFrame - this._timeAtLastFrame) + this._leftover;
 	var catchUpFrameCount = Math.floor(timeSinceLastDoLogic / this._idealTimePerFrame);
 	
-	for(i = 0 ; i < catchUpFrameCount; i++){
+	for(var i = 0 ; i < catchUpFrameCount; i++){
 		this._controller.doLogic();
 	}
 	

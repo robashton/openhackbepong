@@ -1,17 +1,17 @@
-- Add score board
-- Add logic for ball going out of bounds
+[x] Add score board					
+[x] Add logic for ball going out of bounds
 		- Ball gets placed in front of person who scored until they press space and start again
-		- Score gets incremented
+[x]	- Score gets incremented
 
 - Tell the player whether they're left or right
 	- Text at first
 	- Color later
 
-- Logic for what happens after winning
-	- Another game? (Both say yes, paddles get switched)
-	- One closes window? Same logic as usual
+[x] Logic for what happens after winning
+[x]	- Let them just hit refresh for now
 
 - Server re-write - state machine
-- Client refactor - manage state more effectively (again)
+[x]- Trying to avoid this
+[x] Client refactor - manage state more effectively (again)
 
 - Networking code - synchronise state periodically

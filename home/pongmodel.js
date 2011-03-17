@@ -77,7 +77,7 @@ Pong.GameModel = function(left, right, top, bottom) {
 	this.ball.x = -220;
 	this.ball.y = 0;
 
-	this.ball.bounce = 1.0;
+	this.ball.bounce = 1.1;
 	this.ball.decay = 1.0;
 	this.ball.collisionCallback = this.onBallHasCollidedWithPaddle;
 };
@@ -94,6 +94,7 @@ Pong.GameModel.prototype.onBallHasCollidedWithPaddle = function(paddle)
 		this.x += this.x - (paddle.x + paddle.width);
 	}
 	this.velocity.y += paddle.velocity.y;
+	this.velocity.x *= this.bounce; // faster and faster innit
 };
 
 Pong.GameModel.prototype.getModels = function() {
@@ -151,11 +152,16 @@ Pong.GameModel.prototype.checkModelAgainstBoundary = function(model) {
    { 
         model.notifyBoundsTop(this.top);
    }
-   if (model.x < this.left) 
+
+	// Being a crafty fox here and not count it as a left or right until
+	// it's gone past a certain threshold - this gives the other player who isn't lagging
+	// Chance to bat it back and send a message that that's the case
+	// Obviously this is massively prone to cheating, but I'm not worrying about that for this game
+   if (model.x < (this.left - 70)) 
    { 
       model.notifyBoundsLeft(this.left);
    }
-   if ((model.x + model.width) > this.right) 
+   if ((model.x + model.width) > (this.right + 70)) 
    { 
 		model.notifyBoundsRight(this.right);
    }

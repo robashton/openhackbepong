@@ -58,6 +58,12 @@ PongGameStates.Playing = {
 	rightplayerscored: function(data) {
 		this.increaseRightPlayerScore();
 		this.changeState(PongGameStates.PlayerScored);
+	},
+	paddlehitball: function(data){
+		var ball = this.model.ball;
+		ball.x = data.x;
+		ball.y = data.y;
+		ball.velocity = data.velocity;
 	}
 };
 

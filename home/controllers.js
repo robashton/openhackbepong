@@ -15,14 +15,25 @@ Controllers.GameController = function(model, publisher) {
 	var controller = this;
 
 	// Hackity hack hack I just want it done now.
+	// So I can get to work on a real project
 	this.model.ball.boundsLeftCallback = function() {
 		controller.dispatchMessage({message: 'rightplayerscored'});
-	};
-		
+	};		
 	this.model.ball.boundsRightCallback = function() {
 		controller.dispatchMessage({message: 'leftplayerscored'});
 	};
+	var ballCollisionCallback = this.model.ball.collisionCallback;
+	this.model.ball.collisionCallback = function(paddle){
+		ballCollisionCallback.call(this, paddle);
 
+		// An attempt at manual synchronisation without caring about 'ticks'
+		controller.publisher.publish({
+					message: 'paddlehitball', 
+					x: this.x, 
+					y: this.y, 
+					velocity: this.velocity
+				});
+	}; 
 };
 
 Controllers.GameController.prototype.increaseLeftPlayerScore = function(){
